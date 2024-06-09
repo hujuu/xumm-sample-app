@@ -1,35 +1,47 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Xumm } from 'xumm'
+
+const xumm = new Xumm("a77f5963-be7d-4451-b7ff-7717adf7fe0f");
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [account, setAccount] = useState<string | undefined>(undefined);
+    xumm.user.account.then((account) => setAccount(account));
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    const connect = async () => {
+        await xumm.authorize();
+    };
+
+    const disconnect = async () => {
+        // Xummからサインアウト
+        await xumm.logout();
+        // アカウント情報を削除
+        setAccount(undefined);
+    };
+
+    const createTransaction = async () => {
+        const payload = await xumm.payload?.create({
+            TransactionType: "Payment",
+            Destination: "r9GXFFfbgcWi1d5iU5Z2UdzKRE3btfAq8G",
+            Amount: "100", // 100 drops (=0.000100XRP)
+        });
+        if(!payload?.pushed){
+            // Xummへプッシュ通知が届かない場合
+            // payload?.refs.qr_png を利用してQRコードを表示することで署名画面を表示することも可能
+        }
+    };
+
+    return (
+        <div>
+            {account && (
+                <>
+                    <div>{account}</div>
+                    <button onClick={disconnect}>Disonnect</button>
+                    <button onClick={createTransaction}>Payment</button>
+                </>
+            )}
+            {!account && <button onClick={connect}>Connect</button>}
+        </div>
+    );
 }
 
 export default App
