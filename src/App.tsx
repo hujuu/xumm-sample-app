@@ -1,34 +1,33 @@
-import { useState } from 'react'
-import { Xumm } from 'xumm'
-import {convertStringToHex} from "xrpl";
+import { useState, useEffect } from 'react';
+import { Xumm } from 'xumm';
+import {Client, AccountNFTsRequest, convertStringToHex, AccountNFToken} from 'xrpl';
+import Header from "./components/Header";
+import ItemList from "./components/ItemList";
+import HeroImage from "./components/HeroImage";
 
-const xumm = new Xumm("a77f5963-be7d-4451-b7ff-7717adf7fe0f");
+const apiKey = import.meta.env.VITE_XUMM_API_KEY;
 
-function App() {
+if (!apiKey) {
+    throw new Error("XUMM_API_KEY is undefined in the environment variables.");
+}
+const xumm = new Xumm(apiKey);
+
+export default function Home() {
     const [account, setAccount] = useState<string | undefined>(undefined);
-    xumm.user.account.then((account) => setAccount(account));
+    const [nfts, setNfts] = useState<AccountNFToken[] >([]);
+
+    useEffect(() => {
+        xumm.user.account.then((account) => setAccount(account));
+    }, []);
 
     const connect = async () => {
         await xumm.authorize();
     };
 
     const disconnect = async () => {
-        // Xummからサインアウト
         await xumm.logout();
-        // アカウント情報を削除
         setAccount(undefined);
-    };
-
-    const createTransaction = async () => {
-        const payload = await xumm.payload?.create({
-            TransactionType: "Payment",
-            Destination: "r9GXFFfbgcWi1d5iU5Z2UdzKRE3btfAq8G",
-            Amount: "100", // 100 drops (=0.000100XRP)
-        });
-        if(!payload?.pushed){
-            // Xummへプッシュ通知が届かない場合
-            // payload?.refs.qr_png を利用してQRコードを表示することで署名画面を表示することも可能
-        }
+        setNfts([]);
     };
 
     const mintNFT = async () => {
@@ -42,24 +41,49 @@ function App() {
         });
 
         if (!payload?.pushed) {
-            // Xummへプッシュ通知が届かない場合
-            // payload?.refs.qr_png を利用してQRコードを表示することで署名画面を表示することも可能
+            console.log(payload?.refs.qr_png);
+            payload?.refs.qr_png && alert('QRコードを表示しました');
         }
     };
 
+    const fetchNFTs = async () => {
+        if (!account) return;
+
+        const client = new Client('wss://testnet.xrpl-labs.com');
+        await client.connect();
+
+        const request: AccountNFTsRequest = {
+            command: 'account_nfts',
+            account: account,
+        };
+
+        const response = await client.request(request);
+        setNfts(response.result.account_nfts);
+
+        await client.disconnect();
+    };
+
     return (
-        <div>
+        <main>
+            <Header account={account} onConnect={connect} disConnect={disconnect}/>
+            <HeroImage account={account} onConnect={connect} />
             {account && (
-                <>
-                    <div>{account}</div>
-                    <button onClick={disconnect}>Disonnect</button>
-                    <button onClick={createTransaction}>Payment</button>
-                    <button onClick={mintNFT}>Mint NFT</button>
-                </>
+                <div className="max-w-3xl mx-auto">
+                    <button className="btn btn-primary" onClick={mintNFT}>Mint NFT</button>
+                    <button className="btn" onClick={fetchNFTs}>Fetch NFTs</button>
+                    {nfts.length > 0 && (
+                        <div>
+                            <h3>My NFTs</h3>
+                            <ul>
+                                {nfts.map((nft, index) => (
+                                    <li key={index}>{JSON.stringify(nft)}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
             )}
-            {!account && <button onClick={connect}>Connect</button>}
-        </div>
+            <ItemList />
+        </main>
     );
 }
-
-export default App
