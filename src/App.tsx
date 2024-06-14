@@ -63,7 +63,6 @@ export default function Home() {
             <ItemList account={account} />
             {account && (
                 <div className="max-w-3xl mx-auto">
-                    <button className="btn btn-primary" onClick={mintNFT}>Mint NFT</button>
                     <button className="btn" onClick={fetchNFTs}>所有しているNFTを確認する</button>
                     {nfts.length > 0 && (
                         <div>
