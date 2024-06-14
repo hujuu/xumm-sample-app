@@ -57,7 +57,7 @@ export default function Home() {
                                         {JSON.stringify(nft)}
                                         {nft.URI && <img
                                             alt={nft.NFTokenID}
-                                            src={`https://ipfs.io/ipfs/${convertHexToString(nft.URI).replace("ipfs://", "")}`}
+                                            src={`${convertHexToString(nft.URI).replace("ipfs://", "")}`}
                                         />}
                                     </li>
                                 ))}

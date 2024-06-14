@@ -4,7 +4,15 @@ type HeaderProps = {
     disConnect: () => void;
 };
 
+function truncateString(str: string) {
+    if (str.length > 6) {
+        return str.substring(0, 6) + "...";
+    }
+    return str;
+}
+
 export default function Header({ account, onConnect, disConnect } : HeaderProps) {
+
     return (
         <div className="navbar bg-amber-50 border-b border-gray-200">
             <div className="flex-1">
@@ -40,7 +48,6 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
                         <div tabIndex={0}
                              className="mt-3 z-[1] card card-compact dropdown-content w-52 bg-base-100 shadow">
                             <div className="card-body">
-                                <span className="font-bold text-lg">8 Items</span>
                                 <span className="text-info">Subtotal: $999</span>
                                 <div className="card-actions">
                                     <button className="btn btn-primary btn-block">View cart</button>
@@ -60,7 +67,7 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
                                     />
                                 </div>
                             </div>
-                            <div className={"mt-3"}>{account}</div>
+                            <div className={"mt-3"}>{truncateString(account)}</div>
                         </div>
                         <ul tabIndex={0}
                             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
