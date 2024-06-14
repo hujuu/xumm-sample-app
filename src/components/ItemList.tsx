@@ -11,7 +11,7 @@ const products = [
         name: 'Carnation',
         href: '#',
         price: '48',
-        imageSrc: '/images/carnation01.webp',
+        imageSrc: 'https://ipfs.io/ipfs/Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi',
         imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
     },
     {
@@ -19,7 +19,7 @@ const products = [
         name: 'Mimosa',
         href: '#',
         price: '35',
-        imageSrc: '/images/mimosa01.webp',
+        imageSrc: 'https://ipfs.io/ipfs/QmQyo2FQFa1XwXCMtZ37pUdNEodubnn5E25PoQ8EQtv5eh?filename=mimosa01.webp',
         imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
     },
     {
@@ -27,7 +27,7 @@ const products = [
         name: 'Ranunculus',
         href: '#',
         price: '89',
-        imageSrc: '/images/ranunculus01.webp',
+        imageSrc: 'https://ipfs.io/ipfs/QmZ5aBV23U5PksFNh8JTggaAJ6m6zecAEuvc3vgm9vfwTx?filename=ranunculus01.webp',
         imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
     },
     {
@@ -35,7 +35,7 @@ const products = [
         name: 'Tulip',
         href: '#',
         price: '35',
-        imageSrc: '/images/tulip01.webp',
+        imageSrc: 'https://ipfs.io/ipfs/QmcAkzKXQaDCQjVeTxhB8B6XJLUa4mpNtt24vbuyHEfzSA?filename=tulip01.webp',
         imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
     },
 ]
