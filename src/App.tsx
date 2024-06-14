@@ -60,13 +60,14 @@ export default function Home() {
         <main>
             <Header account={account} onConnect={connect} disConnect={disconnect}/>
             <HeroImage account={account} onConnect={connect} />
+            <ItemList account={account} />
             {account && (
                 <div className="max-w-3xl mx-auto">
                     <button className="btn btn-primary" onClick={mintNFT}>Mint NFT</button>
-                    <button className="btn" onClick={fetchNFTs}>Fetch NFTs</button>
+                    <button className="btn" onClick={fetchNFTs}>所有しているNFTを確認する</button>
                     {nfts.length > 0 && (
                         <div>
-                            <h3>My NFTs</h3>
+                            <h3>所有している NFTs</h3>
                             <ul>
                                 {nfts.map((nft, index) => (
                                     <li key={index}>{JSON.stringify(nft)}</li>
@@ -76,7 +77,6 @@ export default function Home() {
                     )}
                 </div>
             )}
-            <ItemList account={account} />
         </main>
     );
 }
