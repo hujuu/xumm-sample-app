@@ -11,7 +11,7 @@ const products = [
         name: 'Carnation',
         href: '#',
         price: '48',
-        imageSrc: 'https://ipfs.io/ipfs/Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi',
+        imageSrc: 'https://gateway.pinata.cloud/ipfs/Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi',
         imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
     },
     {
