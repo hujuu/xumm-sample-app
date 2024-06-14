@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {Client, AccountNFTsRequest, convertStringToHex, AccountNFToken} from 'xrpl';
+import {Client, AccountNFTsRequest, AccountNFToken} from 'xrpl';
 import Header from "./components/Header";
 import ItemList from "./components/ItemList";
 import HeroImage from "./components/HeroImage";
@@ -21,22 +21,6 @@ export default function Home() {
         await xumm.logout();
         setAccount(undefined);
         setNfts([]);
-    };
-
-    const mintNFT = async () => {
-        const payload = await xumm.payload?.create({
-            TransactionType: "NFTokenMint",
-            Account: account,
-            TransferFee: 5 * 1000, // 5%
-            URI: convertStringToHex('ipfs://QmTu17csW1DrFY9xcgH9efBNvMgo39JZwK2adHLpmsJQFR'),
-            NFTokenTaxon: 0, // 0は一般的なトークン
-            Flags: 1 + 8, // Burnable, Transferable
-        });
-
-        if (!payload?.pushed) {
-            console.log(payload?.refs.qr_png);
-            payload?.refs.qr_png && alert('QRコードを表示しました');
-        }
     };
 
     const fetchNFTs = async () => {
