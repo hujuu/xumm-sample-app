@@ -41,12 +41,12 @@ const products = [
 ]
 
 export default function ItemList({ account }: ItemListProps) {
-    const mintNFT = async () => {
+    const mintNFT = async (uriString: string) => {
         const payload = await xumm.payload?.create({
             TransactionType: "NFTokenMint",
             Account: account,
             TransferFee: 5 * 1000, // 5%
-            URI: convertStringToHex('ipfs://QmTu17csW1DrFY9xcgH9efBNvMgo39JZwK2adHLpmsJQFR'),
+            URI: convertStringToHex(uriString),
             NFTokenTaxon: 0, // 0は一般的なトークン
             Flags: 1 + 8, // Burnable, Transferable
         });
@@ -114,7 +114,7 @@ export default function ItemList({ account }: ItemListProps) {
                                         </p>
                                     </div>
                                     <div className="flex items-center justify-center mt-8">
-                                        <button className="btn btn-primary" onClick={mintNFT}>ギフトをmintする</button>
+                                        <button className="btn btn-primary" onClick={() => mintNFT(product.imageSrc)}>ギフトをmintする</button>
                                     </div>
                                     <div className="modal-action">
                                         <form method="dialog">

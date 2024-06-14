@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import {Client, AccountNFTsRequest, AccountNFToken} from 'xrpl';
+import {Client, AccountNFTsRequest, AccountNFToken, convertHexToString} from 'xrpl';
 import Header from "./components/Header";
 import ItemList from "./components/ItemList";
 import HeroImage from "./components/HeroImage";
@@ -52,8 +52,14 @@ export default function Home() {
                         <div>
                             <h3>所有している NFTs</h3>
                             <ul>
-                                {nfts.map((nft, index) => (
-                                    <li key={index}>{JSON.stringify(nft)}</li>
+                                {nfts.map((nft: AccountNFToken, index) => (
+                                    <li key={index}>
+                                        {JSON.stringify(nft)}
+                                        {nft.URI && <img
+                                            alt={nft.NFTokenID}
+                                            src={`https://ipfs.io/ipfs/${convertHexToString(nft.URI).replace("ipfs://", "")}`}
+                                        />}
+                                    </li>
                                 ))}
                             </ul>
                         </div>
