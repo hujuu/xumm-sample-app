@@ -1,16 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Xumm } from 'xumm';
 import {Client, AccountNFTsRequest, convertStringToHex, AccountNFToken} from 'xrpl';
 import Header from "./components/Header";
 import ItemList from "./components/ItemList";
 import HeroImage from "./components/HeroImage";
-
-const apiKey = import.meta.env.VITE_XUMM_API_KEY;
-
-if (!apiKey) {
-    throw new Error("XUMM_API_KEY is undefined in the environment variables.");
-}
-const xumm = new Xumm(apiKey);
+import { xumm } from "./store/XummStore";
 
 export default function Home() {
     const [account, setAccount] = useState<string | undefined>(undefined);
@@ -83,7 +76,7 @@ export default function Home() {
                     )}
                 </div>
             )}
-            <ItemList />
+            <ItemList account={account} />
         </main>
     );
 }

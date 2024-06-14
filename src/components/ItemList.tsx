@@ -1,3 +1,10 @@
+import { xumm } from "../store/XummStore";
+import {convertStringToHex} from "xrpl";
+
+type ItemListProps = {
+    account: string | undefined;
+};
+
 const products = [
     {
         id: 1,
@@ -33,7 +40,24 @@ const products = [
     },
 ]
 
-export default function ItemList() {
+export default function ItemList({ account }: ItemListProps) {
+    const mintNFT = async () => {
+        const payload = await xumm.payload?.create({
+            TransactionType: "NFTokenMint",
+            Account: account,
+            TransferFee: 5 * 1000, // 5%
+            URI: convertStringToHex('ipfs://QmTu17csW1DrFY9xcgH9efBNvMgo39JZwK2adHLpmsJQFR'),
+            NFTokenTaxon: 0, // 0は一般的なトークン
+            Flags: 1 + 8, // Burnable, Transferable
+        });
+        payload?.refs.qr_png && alert('Xummアプリからmintを確定してください');
+
+        if (!payload?.pushed) {
+            console.log(payload?.refs.qr_png);
+            payload?.refs.qr_png && alert('QRコードを表示しました');
+        }
+    };
+
     return (
         <div className="bg-white">
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
@@ -68,14 +92,29 @@ export default function ItemList() {
                             <dialog key={product.id} id={`my_modal_${product.id}`} className="modal">
                                 <div className="modal-box w-11/12 max-w-5xl">
                                     <h3 className="font-bold text-lg">{product.name}</h3>
-                                    <p className="py-4">Click the button below to close</p>
+                                    <p className="py-4"></p>
                                     <div
-                                        className="overflow-hidden rounded-lg xl:aspect-h-8 xl:aspect-w-7 flex items-center justify-center">
+                                        className="overflow-hidden rounded-lg flex items-center justify-center">
                                         <img
                                             src={product.imageSrc}
                                             alt={product.imageAlt}
-                                            className="w-1/2 rounded-lg object-cover object-center group-hover:opacity-75"
+                                            className="w-1/2 h-1/2 rounded-lg"
                                         />
+                                    </div>
+                                    <div className="flex items-center justify-center mt-8">
+                                        <p className="flex mt-1 text-lg font-medium text-gray-900">
+                                            <img
+                                                className={"mr-1"}
+                                                src="/icon-xrp-heavy.svg"
+                                                alt="XRP Icon"
+                                                width={15}
+                                                height={15}
+                                            />
+                                            {product.price}
+                                        </p>
+                                    </div>
+                                    <div className="flex items-center justify-center mt-8">
+                                        <button className="btn btn-primary" onClick={mintNFT}>ギフトをmintする</button>
                                     </div>
                                     <div className="modal-action">
                                         <form method="dialog">
