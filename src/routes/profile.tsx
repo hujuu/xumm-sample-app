@@ -1,20 +1,25 @@
 import { useState, useEffect } from 'react';
-import {Client, AccountNFTsRequest, AccountNFToken, convertHexToString} from 'xrpl';
+import { Client, AccountNFTsRequest, AccountNFToken, convertHexToString } from 'xrpl';
 import Header from "../components/Header";
-import ItemList from "../components/ItemList";
 import HeroImage from "../components/HeroImage";
 import { xumm } from "../store/XummStore";
 
+const fetchMetadata = async (uri: string) => {
+    const response = await fetch(uri);
+    const metadata = await response.json();
+    return metadata;
+};
+
 export default function Profile() {
     const [account, setAccount] = useState<string | undefined>(undefined);
-    const [nfts, setNfts] = useState<AccountNFToken[] >([]);
+    const [nfts, setNfts] = useState<AccountNFToken[]>([]);
+    const [metadataList, setMetadataList] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
         xumm.user.account.then((account) => setAccount(account));
     }, []);
 
     useEffect(() => {
-        // If no account available, skip fetching NFTs
         if (!account) return;
 
         const fetchNFTs = async () => {
@@ -33,7 +38,37 @@ export default function Profile() {
         };
 
         fetchNFTs();
-    }, [account]); // fetchNFTs is called when 'account' state changes.
+    }, [account]);
+
+    useEffect(() => {
+        const fetchAllMetadata = async () => {
+            const metadataPromises = nfts.map(async (nft) => {
+                if (nft.URI) {
+                    const uri = convertHexToString(nft.URI).replace("ipfs://", "https://ipfs.io/ipfs/");
+                    try {
+                        const metadata = await fetchMetadata(uri);
+                        return { nftId: nft.NFTokenID, metadata };
+                    } catch (error) {
+                        console.error(`Error fetching metadata for URI: ${uri}`, error);
+                        return { nftId: nft.NFTokenID, metadata: null };
+                    }
+                }
+                return { nftId: nft.NFTokenID, metadata: null };
+            });
+
+            const resolvedMetadata = await Promise.all(metadataPromises);
+            const newMetadataList = resolvedMetadata.reduce((acc, { nftId, metadata }) => {
+                acc[nftId] = metadata;
+                return acc;
+            }, {} as { [key: string]: any });
+
+            setMetadataList(newMetadataList);
+        };
+
+        if (nfts.length > 0) {
+            fetchAllMetadata();
+        }
+    }, [nfts]);
 
     const connect = async () => {
         await xumm.authorize();
@@ -43,31 +78,73 @@ export default function Profile() {
         await xumm.logout();
         setAccount(undefined);
         setNfts([]);
+        setMetadataList({});
     };
-
 
     return (
         <main>
-            <Header account={account} onConnect={connect} disConnect={disconnect}/>
+            <Header account={account} onConnect={connect} disConnect={disconnect} />
             <HeroImage account={account} onConnect={connect} />
-            <ItemList account={account} />
             {account && (
                 <div className="max-w-3xl mx-auto">
                     {nfts.length > 0 && (
-                        <div>
-                            <h3>所有している NFTs</h3>
-                            <ul>
+                        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                            <h2>所有している NFTs</h2>
+                            <div
+                                className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                                 {nfts.map((nft: AccountNFToken, index) => (
-                                    <li key={index}>
-                                        {JSON.stringify(nft)}
-                                        {nft.URI && <img
-                                            alt={nft.NFTokenID}
-                                            src={`${convertHexToString(nft.URI).replace("ipfs://", "")}`}
-                                        />}
-                                        {nft.URI && <p>{convertHexToString(nft.URI)}</p>}
-                                    </li>
+                                    <div key={index}>
+                                        <div>
+                                            <p><strong>NFT ID:</strong> {nft.NFTokenID}</p>
+                                            {nft.URI && (
+                                                <p><strong>URI:</strong> {convertHexToString(nft.URI)}</p>
+                                            )}
+                                            {metadataList[nft.NFTokenID] && (
+                                                <div>
+                                                    <h4>Metadata:</h4>
+                                                    <pre>{JSON.stringify(metadataList[nft.NFTokenID], null, 2)}</pre>
+                                                    <img
+                                                        alt={nft.NFTokenID}
+                                                        src={metadataList[nft.NFTokenID]?.image}
+                                                        style={{maxWidth: "200px", maxHeight: "200px"}}
+                                                    />
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div
+                                            onClick={() => (document.getElementById(`my_modal_${index}`) as HTMLDialogElement).showModal()}
+                                            className="group">
+                                            <div
+                                                className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                                                <img
+                                                    src={metadataList[nft.NFTokenID]?.image}
+                                                    alt={metadataList[nft.NFTokenID]?.name}
+                                                    className="h-full w-full object-cover object-center group-hover:opacity-75"
+                                                />
+                                            </div>
+                                            <h3 className="mt-4 text-sm text-gray-700">{metadataList[nft.NFTokenID]?.name}</h3>
+                                        </div>
+                                        <dialog key={index} id={`my_modal_${index}`} className="modal">
+                                            <div className="modal-box w-10/12 max-w-5xl">
+                                                <h3 className="font-bold text-lg">{metadataList[nft.NFTokenID]?.name}</h3>
+                                                <div
+                                                    className="overflow-hidden rounded-lg flex items-center justify-center">
+                                                    <img
+                                                        src={metadataList[nft.NFTokenID]?.image}
+                                                        alt={metadataList[nft.NFTokenID]?.name}
+                                                        className="w-1/3 h-1/3 rounded-lg"
+                                                    />
+                                                </div>
+                                                <div className="modal-action">
+                                                    <form method="dialog">
+                                                        <button className="btn">Close</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </dialog>
+                                    </div>
                                 ))}
-                            </ul>
+                            </div>
                         </div>
                     )}
                 </div>
