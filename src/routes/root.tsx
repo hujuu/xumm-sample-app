@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import {Client, AccountNFTsRequest, AccountNFToken, convertHexToString} from 'xrpl';
-import Header from "./components/Header";
-import ItemList from "./components/ItemList";
-import HeroImage from "./components/HeroImage";
-import { xumm } from "./store/XummStore";
+import Header from "../components/Header";
+import ItemList from "../components/ItemList";
+import HeroImage from "../components/HeroImage";
+import { xumm } from "../store/XummStore";
 
-export default function Home() {
+export default function Root() {
     const [account, setAccount] = useState<string | undefined>(undefined);
     const [nfts, setNfts] = useState<AccountNFToken[] >([]);
 
