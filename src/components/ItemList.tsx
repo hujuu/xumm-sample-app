@@ -53,14 +53,6 @@ export default function ItemList({ account }: ItemListProps) {
             URI: convertStringToHex(uriString),
             NFTokenTaxon: 0, // 0は一般的なトークン
             Flags: 1 + 8, // Burnable, Transferable
-            Memos: [
-                {
-                    "Metadata": {
-                        "name": "Carnation",
-                        "image": "ipfs://Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi",
-                    }
-                }
-            ]
         });
         payload?.refs.qr_png && alert('Xummアプリからmintを確定してください');
 
