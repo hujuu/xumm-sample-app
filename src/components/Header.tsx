@@ -16,7 +16,7 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
     return (
         <div className="navbar bg-amber-50 border-b border-gray-200">
             <div className="flex-1">
-                <a className="btn btn-ghost text-xl">Fun Pass</a>
+                <a href={"/"} className="btn btn-ghost text-xl">Fun Pass</a>
             </div>
             {!account && (
                 <div className="flex-none">
@@ -72,7 +72,7 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
                         <ul tabIndex={0}
                             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li>
-                                <a className="justify-between">
+                                <a href={"/my-profile"} className="justify-between">
                                     Profile
                                     <span className="badge">New</span>
                                 </a>
