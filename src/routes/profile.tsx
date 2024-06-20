@@ -81,6 +81,37 @@ export default function Profile() {
         setMetadataList({});
     };
 
+    const createOfferNFT = async (tokenId: string) => {
+        const payload = await xumm.payload?.create({
+            TransactionType: "NFTokenCreateOffer",
+            NFTokenID: tokenId,
+            Amount: "1310000",
+            Destination: "r4aNu6fs5HuS6vBrHrTbNQhp2QbsX9qPSw",
+            Flags : 1,
+        });
+        payload?.refs.qr_png && alert('オファーを作成しました');
+
+        if (!payload?.pushed) {
+            console.log(payload?.refs.qr_png);
+            payload?.refs.qr_png && alert('QRコードを表示しました');
+        }
+    };
+
+    const burnNFT = async (tokenId: string) => {
+        const payload = await xumm.payload?.create({
+            "TransactionType": "NFTokenBurn",
+            "Account": account,
+            "Fee": "10",
+            "NFTokenID": tokenId
+        });
+        payload?.refs.qr_png && alert('NFTを削除しました');
+
+        if (!payload?.pushed) {
+            console.log(payload?.refs.qr_png);
+            payload?.refs.qr_png && alert('QRコードを表示しました');
+        }
+    };
+
     return (
         <main>
             <Header account={account} onConnect={connect} disConnect={disconnect} />
@@ -94,23 +125,6 @@ export default function Profile() {
                                 className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                                 {nfts.map((nft: AccountNFToken, index) => (
                                     <div key={index}>
-                                        <div>
-                                            <p><strong>NFT ID:</strong> {nft.NFTokenID}</p>
-                                            {nft.URI && (
-                                                <p><strong>URI:</strong> {convertHexToString(nft.URI)}</p>
-                                            )}
-                                            {metadataList[nft.NFTokenID] && (
-                                                <div>
-                                                    <h4>Metadata:</h4>
-                                                    <pre>{JSON.stringify(metadataList[nft.NFTokenID], null, 2)}</pre>
-                                                    <img
-                                                        alt={nft.NFTokenID}
-                                                        src={metadataList[nft.NFTokenID]?.image}
-                                                        style={{maxWidth: "200px", maxHeight: "200px"}}
-                                                    />
-                                                </div>
-                                            )}
-                                        </div>
                                         <div
                                             onClick={() => (document.getElementById(`my_modal_${index}`) as HTMLDialogElement).showModal()}
                                             className="group">
@@ -127,6 +141,18 @@ export default function Profile() {
                                         <dialog key={index} id={`my_modal_${index}`} className="modal">
                                             <div className="modal-box w-10/12 max-w-5xl">
                                                 <h3 className="font-bold text-lg">{metadataList[nft.NFTokenID]?.name}</h3>
+                                                <div>
+                                                    <p><strong>NFT ID:</strong> {nft.NFTokenID}</p>
+                                                    {nft.URI && (
+                                                        <p><strong>URI:</strong> {convertHexToString(nft.URI)}</p>
+                                                    )}
+                                                    {metadataList[nft.NFTokenID] && (
+                                                        <div>
+                                                            <h4>Metadata:</h4>
+                                                            <pre>{JSON.stringify(metadataList[nft.NFTokenID], null, 2)}</pre>
+                                                        </div>
+                                                    )}
+                                                </div>
                                                 <div
                                                     className="overflow-hidden rounded-lg flex items-center justify-center">
                                                     <img
@@ -135,9 +161,17 @@ export default function Profile() {
                                                         className="w-1/3 h-1/3 rounded-lg"
                                                     />
                                                 </div>
+                                                <div className="flex items-center justify-center mt-8">
+                                                    <button className="btn btn-primary"
+                                                            onClick={() => createOfferNFT(nft.NFTokenID)}>オファーを作成する
+                                                    </button>
+                                                    <button className="btn btn-outline btn-warning"
+                                                            onClick={() => burnNFT(nft.NFTokenID)}>削除する
+                                                    </button>
+                                                </div>
                                                 <div className="modal-action">
                                                     <form method="dialog">
-                                                        <button className="btn">Close</button>
+                                                    <button className="btn">Close</button>
                                                     </form>
                                                 </div>
                                             </div>
