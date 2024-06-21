@@ -65,13 +65,22 @@ export default function ItemList({ account }: ItemListProps) {
     return (
         <div className="bg-white">
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+                <div className="relative mb-4">
+                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                        <div className="w-full border-t border-gray-300"/>
+                    </div>
+                    <div className="relative flex justify-start">
+                        <span className="bg-white pr-3 text-base font-semibold leading-6 text-gray-900">Self Mint</span>
+                    </div>
+                </div>
                 <h2 className="sr-only">Products</h2>
-                <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
+                <div
+                    className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                     {products.map((product) => (
                         <div key={product.id}>
                             <div
-                                 onClick={() => (document.getElementById(`my_modal_${product.id}`) as HTMLDialogElement).showModal()}
-                                 className="group">
+                                onClick={() => (document.getElementById(`my_modal_${product.id}`) as HTMLDialogElement).showModal()}
+                                className="group">
                                 <div
                                     className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                     <img
@@ -117,7 +126,9 @@ export default function ItemList({ account }: ItemListProps) {
                                         </p>
                                     </div>
                                     <div className="flex items-center justify-center mt-8">
-                                        <button className="btn btn-primary" onClick={() => mintNFT(product.uri)}>ギフトをmintする</button>
+                                        <button className="btn btn-primary"
+                                                onClick={() => mintNFT(product.uri)}>ギフトをmintする
+                                        </button>
                                     </div>
                                     <div className="modal-action">
                                         <form method="dialog">
