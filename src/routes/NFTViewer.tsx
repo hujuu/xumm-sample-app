@@ -1,5 +1,5 @@
-import {useLoaderData, useParams} from 'react-router-dom';
-import {convertHexToString} from "xrpl";
+import { useLoaderData, useParams } from 'react-router-dom';
+import {convertHexToString} from 'xrpl';
 
 interface NFTInfo {
     NFTokenID: string;
