@@ -44,7 +44,7 @@ export default function Profile() {
         const fetchAllMetadata = async () => {
             const metadataPromises = nfts.map(async (nft) => {
                 if (nft.URI) {
-                    const uri = convertHexToString(nft.URI).replace("ipfs://", "https://ipfs.io/ipfs/");
+                    const uri = convertHexToString(nft.URI).replace("ipfs://", "https://tan-tragic-hippopotamus-246.mypinata.cloud/ipfs/");
                     try {
                         const metadata = await fetchMetadata(uri);
                         return { nftId: nft.NFTokenID, metadata };
