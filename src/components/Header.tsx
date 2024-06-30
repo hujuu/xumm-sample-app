@@ -1,3 +1,6 @@
+import {useEffect, useState} from "react";
+import { Client, AccountInfoRequest } from 'xrpl';
+
 type HeaderProps = {
     account: string | undefined;
     onConnect: () => void;
@@ -12,6 +15,29 @@ function truncateString(str: string) {
 }
 
 export default function Header({ account, onConnect, disConnect } : HeaderProps) {
+    const [balance, setBalance] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        const fetchBalance = async () => {
+            if (account) {
+                const client = new Client('wss://testnet.xrpl-labs.com');
+                await client.connect();
+
+                const request: AccountInfoRequest = {
+                    command: 'account_info',
+                    account: account,
+                    ledger_index: 'validated'
+                };
+
+                const response = await client.request(request);
+                setBalance(response.result.account_data.Balance);
+                await client.disconnect();
+            }
+        };
+
+        fetchBalance();
+    }, [account]);
+
 
     return (
         <div className="navbar bg-amber-50 border-b border-gray-200">
@@ -22,6 +48,18 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
                 <a href={"/my-profile"} className="justify-between btn btn-ghost">
                     My NFTs
                 </a>
+            </div>
+            <div className="flex mr-4 font-semibold">
+                <div className="flex">
+                    <img
+                        className={"mr-1"}
+                        src="/icon-xrp-heavy.svg"
+                        alt="XRP Icon"
+                        width={15}
+                        height={15}
+                    />
+                    {balance !== undefined ? `${Number(balance) / 1000000}` : 'Fetching balance...'}
+                </div>
             </div>
             {!account && (
                 <div className="flex-none">
@@ -82,7 +120,9 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
                                     <span className="badge">New</span>
                                 </a>
                             </li>
-                            <li><div onClick={disConnect}>Logout</div></li>
+                            <li>
+                                <div onClick={disConnect}>Logout</div>
+                            </li>
                         </ul>
                     </div>
                 </div>
