@@ -11,7 +11,7 @@ const products = [
         name: 'Carnation',
         href: '#',
         price: '0.000012 (Only TransferFee)',
-        imageSrc: 'https://gateway.pinata.cloud/ipfs/Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi',
+        imageSrc: 'https://ipfs.io/ipfs/Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi?filename=carnation01.webp',
         imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
         uri: 'ipfs://QmYUGmN2Px6ccqhG98nPmHe4QSyQ1hheZh9D2oEdQanQqk',
     },
@@ -45,7 +45,7 @@ const products = [
 ]
 
 export default function ItemList({ account }: ItemListProps) {
-    const mintNFT = async (uriString: string) => {
+    const mintNFT = async (uriString: string, name: string) => {
         const payload = await xumm.payload?.create({
             TransactionType: "NFTokenMint",
             Account: account,
@@ -53,6 +53,14 @@ export default function ItemList({ account }: ItemListProps) {
             URI: convertStringToHex(uriString),
             NFTokenTaxon: 0, // 0は一般的なトークン
             Flags: 1 + 8, // Burnable, Transferable
+            Memos: [
+                {
+                    "Memo": {
+                        "MemoType": "746578742f706c61696e", // "text/plain"
+                        "MemoData": convertStringToHex(name)
+                    }
+                }
+            ],
         });
         payload?.refs.qr_png && alert('Xummアプリからmintを確定してください');
 
@@ -127,7 +135,7 @@ export default function ItemList({ account }: ItemListProps) {
                                     </div>
                                     <div className="flex items-center justify-center mt-8">
                                         <button className="btn btn-primary"
-                                                onClick={() => mintNFT(product.uri)}>ギフトをmintする
+                                                onClick={() => mintNFT(product.uri, product.name)}>ギフトをmintする
                                         </button>
                                     </div>
                                     <div className="modal-action">
