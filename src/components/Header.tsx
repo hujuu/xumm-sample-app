@@ -18,6 +18,11 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
             <div className="flex-1">
                 <a href={"/"} className="btn btn-ghost text-xl">Fun Pass</a>
             </div>
+            <div className="flex mr-4 font-semibold">
+                <a href={"/my-profile"} className="justify-between btn btn-ghost">
+                    My NFTs
+                </a>
+            </div>
             {!account && (
                 <div className="flex-none">
                     <div className="dropdown dropdown-end">
@@ -73,7 +78,7 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
                             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
                             <li>
                                 <a href={"/my-profile"} className="justify-between">
-                                    Profile
+                                    My NFTs
                                     <span className="badge">New</span>
                                 </a>
                             </li>
