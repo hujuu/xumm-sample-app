@@ -1,5 +1,6 @@
 import { xumm } from "../store/XummStore";
 import {convertStringToHex} from "xrpl";
+import {useState} from "react";
 
 type ItemListProps = {
     account: string | undefined;
@@ -63,7 +64,14 @@ const products = [
 ]
 
 export default function ItemList({ account }: ItemListProps) {
-    const mintNFT = async (uriString: string, name: string) => {
+    const [inputValue, setInputValue] = useState('');  // 初期値は空文字
+
+    const handleInputChange = (e: any) => {
+        // inputからの新しい値をセットする
+        setInputValue(e.target.value);
+    };
+
+    const mintNFT = async (uriString: string, message: string) => {
         const payload = await xumm.payload?.create({
             TransactionType: "NFTokenMint",
             Account: account,
@@ -75,7 +83,7 @@ export default function ItemList({ account }: ItemListProps) {
                 {
                     "Memo": {
                         "MemoType": "746578742f706c61696e", // "text/plain"
-                        "MemoData": convertStringToHex(name)
+                        "MemoData": convertStringToHex(message)
                     }
                 }
             ],
@@ -160,8 +168,13 @@ export default function ItemList({ account }: ItemListProps) {
                                                     <span className="label-text">メッセージ</span>
                                                     <span className="label-text-alt">最大全角512文字</span>
                                                 </div>
-                                                <input type="text" placeholder="Type here"
-                                                       className="input input-bordered w-full max-w-s"/>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Type here"
+                                                    className="input input-bordered w-full max-w-s"
+                                                    value={inputValue}
+                                                    onChange={handleInputChange}
+                                                />
                                                 <div className="label">
                                                     <span className="label-text-alt"></span>
                                                     <span className="label-text-alt"></span>
@@ -170,7 +183,7 @@ export default function ItemList({ account }: ItemListProps) {
                                         </div>
                                         <div className="flex mt-8">
                                             <button className="btn btn-primary"
-                                                    onClick={() => mintNFT(product.uri, product.name)}>ギフトをmintする
+                                                    onClick={() => mintNFT(product.uri, inputValue)}>ギフトをmintする
                                             </button>
                                         </div>
                                         <div className="modal-action">
