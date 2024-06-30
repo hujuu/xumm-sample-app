@@ -42,6 +42,24 @@ const products = [
         imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
         uri: 'ipfs://QmYUGmN2Px6ccqhG98nPmHe4QSyQ1hheZh9D2oEdQanQqk',
     },
+    {
+        id: 5,
+        name: 'Ranunculus',
+        href: '#',
+        price: '0.000012 (Only TransferFee)',
+        imageSrc: 'https://gateway.pinata.cloud/ipfs/QmQF5z3gtAeae66LBDGK3ECBxXhPYNRYePGGGQ8ZVjyXbZ',
+        imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
+        uri: 'ipfs://QmUnANUcvLncvHxFKjC4MCUJkSwK4VzarrcKKyPc2f13xZ',
+    },
+    {
+        id: 6,
+        name: 'AoyamaDeveloperUnion',
+        href: '#',
+        price: '0.000012 (Only TransferFee)',
+        imageSrc: 'https://tan-tragic-hippopotamus-246.mypinata.cloud/ipfs/QmUxtwtHFBLZokLzXA8WyCLUf1EGMr4Xzt3cZBaZvufPXt',
+        imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
+        uri: 'ipfs://QmRPN2k2ESToWPCST5oH3bnf6TiuJsjNuBrWW9JBQsPREB',
+    },
 ]
 
 export default function ItemList({ account }: ItemListProps) {
@@ -110,38 +128,56 @@ export default function ItemList({ account }: ItemListProps) {
                                 </p>
                             </div>
                             <dialog key={product.id} id={`my_modal_${product.id}`} className="modal">
-                                <div className="modal-box w-10/12 max-w-5xl">
-                                    <h3 className="font-bold text-lg">{product.name}</h3>
-                                    <p className="py-4"></p>
-                                    <div
-                                        className="overflow-hidden rounded-lg flex items-center justify-center">
-                                        <img
-                                            src={product.imageSrc}
-                                            alt={product.imageAlt}
-                                            className="w-1/3 h-1/3 rounded-lg"
-                                        />
-                                    </div>
-                                    <div className="flex items-center justify-center mt-8">
-                                        <p className="flex mt-1 text-lg font-medium text-gray-900">
+                                <div className="grid grid-cols-2 gap-4 modal-box w-10/12 max-w-5xl">
+                                    <div>
+                                        <h3 className="font-bold text-lg">{product.name}</h3>
+                                        <p className="py-4"></p>
+                                        <div
+                                            className="overflow-hidden rounded-lg flex items-center justify-center">
                                             <img
-                                                className={"mr-1"}
-                                                src="/icon-xrp-heavy.svg"
-                                                alt="XRP Icon"
-                                                width={15}
-                                                height={15}
+                                                src={product.imageSrc}
+                                                alt={product.imageAlt}
+                                                className="w-1/3 h-1/3 rounded-lg"
                                             />
-                                            {product.price}
-                                        </p>
+                                        </div>
+                                        <div className="flex items-center justify-center mt-8">
+                                            <p className="flex mt-1 text-lg font-medium text-gray-900">
+                                                <img
+                                                    className={"mr-1"}
+                                                    src="/icon-xrp-heavy.svg"
+                                                    alt="XRP Icon"
+                                                    width={15}
+                                                    height={15}
+                                                />
+                                                {product.price}
+                                            </p>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center justify-center mt-8">
-                                        <button className="btn btn-primary"
-                                                onClick={() => mintNFT(product.uri, product.name)}>ギフトをmintする
-                                        </button>
-                                    </div>
-                                    <div className="modal-action">
-                                        <form method="dialog">
-                                            <button className="btn">Close</button>
-                                        </form>
+                                    <div>
+                                        <div className="flex mt-8">
+                                            <label className="form-control w-full max-w-s">
+                                                <div className="label">
+                                                    <span className="label-text">メッセージ</span>
+                                                    <span className="label-text-alt">最大全角512文字</span>
+                                                </div>
+                                                <input type="text" placeholder="Type here"
+                                                       className="input input-bordered w-full max-w-s"/>
+                                                <div className="label">
+                                                    <span className="label-text-alt"></span>
+                                                    <span className="label-text-alt"></span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div className="flex mt-8">
+                                            <button className="btn btn-primary"
+                                                    onClick={() => mintNFT(product.uri, product.name)}>ギフトをmintする
+                                            </button>
+                                        </div>
+                                        <div className="modal-action">
+                                            <form method="dialog">
+                                                <button className="btn">Close</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </dialog>
