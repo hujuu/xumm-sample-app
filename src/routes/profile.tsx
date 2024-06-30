@@ -117,10 +117,17 @@ export default function Profile() {
             <Header account={account} onConnect={connect} disConnect={disconnect} />
             <HeroImage account={account} onConnect={connect} />
             {account && (
-                <div className="max-w-3xl mx-auto">
+                <div className="bg-white">
                     {nfts.length > 0 && (
                         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-                            <h2>所有している NFTs</h2>
+                            <div className="relative mb-4">
+                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                    <div className="w-full border-t border-gray-300"/>
+                                </div>
+                                <div className="relative flex justify-start">
+                                    <span className="bg-white pr-3 text-base font-semibold leading-6 text-gray-900">所有している NFTs</span>
+                                </div>
+                            </div>
                             <div
                                 className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 xl:gap-x-8">
                                 {nfts.map((nft: AccountNFToken, index) => (
@@ -171,7 +178,7 @@ export default function Profile() {
                                                 </div>
                                                 <div className="modal-action">
                                                     <form method="dialog">
-                                                    <button className="btn">Close</button>
+                                                        <button className="btn">Close</button>
                                                     </form>
                                                 </div>
                                             </div>
