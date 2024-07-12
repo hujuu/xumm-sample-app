@@ -44,23 +44,27 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
             <div className="flex-1">
                 <a href={"/"} className="btn btn-ghost text-xl">Fun Pass</a>
             </div>
-            <div className="flex mr-4 font-semibold">
-                <a href={"/my-profile"} className="justify-between btn btn-ghost">
-                    My NFTs
-                </a>
-            </div>
-            <div className="flex mr-4 font-semibold">
-                <div className="flex">
-                    <img
-                        className={"mr-1"}
-                        src="/icon-xrp-heavy.svg"
-                        alt="XRP Icon"
-                        width={15}
-                        height={15}
-                    />
-                    {balance !== undefined ? `${Number(balance) / 1000000}` : 'Fetching balance...'}
-                </div>
-            </div>
+            {account && (
+                <>
+                    <div className="flex mr-4 font-semibold">
+                        <a href={"/my-profile"} className="justify-between btn btn-ghost">
+                            My NFTs
+                        </a>
+                    </div>
+                    <div className="flex mr-4 font-semibold">
+                        <div className="flex">
+                            <img
+                                className={"mr-1"}
+                                src="/icon-xrp-heavy.svg"
+                                alt="XRP Icon"
+                                width={15}
+                                height={15}
+                            />
+                            {balance !== undefined ? `${Number(balance) / 1000000}` : 'Fetching balance...'}
+                        </div>
+                    </div>
+                </>
+            )}
             {!account && (
                 <div className="flex-none">
                     <div className="dropdown dropdown-end">
