@@ -87,7 +87,22 @@ export default function Profile() {
             NFTokenID: tokenId,
             Amount: "1310000",
             Destination: "r4aNu6fs5HuS6vBrHrTbNQhp2QbsX9qPSw",
-            Flags : 1,
+            Flags : 1 // sell flag,
+        });
+        payload?.refs.qr_png && alert('オファーを作成しました');
+
+        if (!payload?.pushed) {
+            console.log(payload?.refs.qr_png);
+            payload?.refs.qr_png && alert('QRコードを表示しました');
+        }
+    };
+
+    const createPresentOfferNFT = async (tokenId: string) => {
+        const payload = await xumm.payload?.create({
+            TransactionType: "NFTokenCreateOffer",
+            NFTokenID: tokenId,
+            Amount: "0",
+            Flags : 1 // sell flag,
         });
         payload?.refs.qr_png && alert('オファーを作成しました');
 
@@ -168,7 +183,15 @@ export default function Profile() {
                                                         className="w-1/3 h-1/3 rounded-lg"
                                                     />
                                                 </div>
+                                                <div className="text-center">
+                                                    <a href={`/nft/${account}/${nft.NFTokenID}`} className="link">
+                                                        ギフトページを確認する
+                                                    </a>
+                                                </div>
                                                 <div className="flex items-center justify-center mt-8">
+                                                    <button className="btn btn-primary"
+                                                            onClick={() => createPresentOfferNFT(nft.NFTokenID)}>NFTをプレゼントする
+                                                    </button>
                                                     <button className="btn btn-primary"
                                                             onClick={() => createOfferNFT(nft.NFTokenID)}>オファーを作成する
                                                     </button>
