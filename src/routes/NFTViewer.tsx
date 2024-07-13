@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLoaderData, useParams } from 'react-router-dom';
-import { convertHexToString } from 'xrpl';
+import {
+    Client,
+    convertHexToString, NFTOffer,
+    NFTSellOffersRequest,
+} from 'xrpl';
 import '../gift.css';
 
 interface NFTInfo {
@@ -15,24 +19,51 @@ interface Metadata {
     name?: string;
     description?: string;
     image?: string;
-    // Add other metadata fields as needed
 }
 
 const fetchMetadata = async (uri: string): Promise<Metadata> => {
     try {
         const response = await fetch(uri);
-        const metadata = await response.json();
-        return metadata;
+        return await response.json();
     } catch (error) {
         console.error('Error fetching metadata:', error);
         return {};
     }
 };
 
+const fetchOffers = async (nftId: string): Promise<NFTOffer[]> => {
+    const client = new Client('wss://testnet.xrpl-labs.com');
+    await client.connect();
+
+    const request: NFTSellOffersRequest = {
+        command: 'nft_sell_offers',
+        nft_id: nftId,
+    };
+
+    try {
+        const response = await client.request(request);
+        console.log(`Offers for NFT ID ${nftId}:`, response.result.offers);
+        return response.result.offers || [];
+    } catch (error) {
+        console.error(`Error fetching offers for NFT ID ${nftId}:`, error);
+        return [];
+    } finally {
+        await client.disconnect();
+    }
+};
+
+const acceptOffer = async (offerId: string): Promise<boolean> => {
+    // This is a placeholder. You'll need to implement the actual XRPL transaction to accept an offer.
+    console.log(`Accepting offer with ID: ${offerId}`);
+    return true;
+};
+
 export default function NFTViewer() {
     const nftInfo = useLoaderData() as NFTInfo;
     const { accountId, nftId } = useParams<{ accountId: string; nftId: string }>();
     const [metadata, setMetadata] = useState<Metadata>({});
+    const [offers, setOffers] = useState<NFTOffer[]>([]);
+    const [isAccepting, setIsAccepting] = useState(false);
 
     useEffect(() => {
         const getMetadata = async () => {
@@ -43,8 +74,28 @@ export default function NFTViewer() {
             }
         };
 
+        const getOffers = async () => {
+            if (nftId) {
+                const fetchedOffers = await fetchOffers(nftId);
+                setOffers(fetchedOffers);
+            }
+        };
+
         getMetadata();
-    }, [nftInfo.URI]);
+        getOffers();
+    }, [nftInfo.URI, nftId]);
+
+    const handleAcceptOffer = async (offerId: string) => {
+        setIsAccepting(true);
+        const success = await acceptOffer(offerId);
+        if (success) {
+            setOffers(offers.filter(offer => offer.nft_offer_index !== offerId));
+            alert('Offer accepted successfully!');
+        } else {
+            alert('Failed to accept offer. Please try again.');
+        }
+        setIsAccepting(false);
+    };
 
     return (
         <div>
@@ -83,12 +134,31 @@ export default function NFTViewer() {
             <p>Token Taxon: {nftInfo.NFTokenTaxon}</p>
             <p>Owner: {nftInfo.owner}</p>
             <p>URI: {nftInfo.URI ? convertHexToString(nftInfo.URI) : 'N/A'}</p>
-            {metadata.name}
+            {metadata.name && <p>Name: {metadata.name}</p>}
             {metadata.description && (
                 <div>
                     <h3>Description</h3>
                     <p>{metadata.description}</p>
                 </div>
+            )}
+
+            <h2>Offers</h2>
+            {offers.length > 0 ? (
+                <ul>
+                    {offers.map(offer => (
+                        <li key={offer.nft_offer_index}>
+                            Offer ID: {offer.nft_offer_index}, Amount: {offer.amount.toString()}, Owner: {offer.owner}
+                            <button
+                                onClick={() => handleAcceptOffer(offer.nft_offer_index)}
+                                disabled={isAccepting}
+                            >
+                                {isAccepting ? 'Accepting...' : 'Accept Offer'}
+                            </button>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No offers available for this NFT.</p>
             )}
         </div>
     );
