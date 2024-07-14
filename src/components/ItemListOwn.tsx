@@ -12,15 +12,13 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
     const handleSendGift = async (nftId: string) => {
         try {
             createPresentOfferNFT(nftId)
-            const response = await axios.post('http://127.0.0.1:8000/api/gifts', {
+            const response = await axios.post('https://irodori-api.vercel.app/api/gifts', {
                 nft_id: nftId,
                 message: inputValue
             });
             console.log('Gift sent successfully:', response.data);
-            // You might want to add some user feedback here, like a success message
         } catch (error) {
             console.error('Error sending gift:', error);
-            // You might want to add some error handling here, like showing an error message to the user
         }
     };
 
