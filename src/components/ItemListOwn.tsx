@@ -2,7 +2,7 @@ import {AccountNFToken} from "xrpl";
 import {ChangeEvent, useState} from "react";
 import axios from 'axios';
 
-export default function ItemListOwn({ nfts, metadataList, createOfferNFT, createPresentOfferNFT, burnNFT }: any) {
+export default function ItemListOwn({ account, nfts, metadataList, createOfferNFT, createPresentOfferNFT, burnNFT }: any) {
     const [inputValue, setInputValue] = useState('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -65,12 +65,17 @@ export default function ItemListOwn({ nfts, metadataList, createOfferNFT, create
                                                 className="w-1/3 h-1/3 rounded-lg"
                                             />
                                         </div>
+                                        <div className="text-center">
+                                            <a href={`/nft/${account}/${nft.NFTokenID}`} className="link">
+                                                ギフトページを確認する
+                                            </a>
+                                        </div>
                                     </div>
                                     <div>
                                         <div className="flex mt-8">
                                             <label className="form-control w-full max-w-s">
                                                 <div className="label">
-                                                    <span className="label-text">メッセージ</span>
+                                                <span className="label-text">メッセージ</span>
                                                     <span className="label-text-alt">最大全角512文字</span>
                                                 </div>
                                                 <input
