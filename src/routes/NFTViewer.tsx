@@ -5,6 +5,7 @@ import {
     convertHexToString, NFTOffer,
     NFTSellOffersRequest,
 } from 'xrpl';
+import { xumm } from "../store/XummStore";
 import '../gift.css';
 
 interface NFTInfo {
@@ -52,13 +53,8 @@ const fetchOffers = async (nftId: string): Promise<NFTOffer[]> => {
     }
 };
 
-const acceptOffer = async (offerId: string): Promise<boolean> => {
-    // This is a placeholder. You'll need to implement the actual XRPL transaction to accept an offer.
-    console.log(`Accepting offer with ID: ${offerId}`);
-    return true;
-};
-
 export default function NFTViewer() {
+    const [account, setAccount] = useState<string | undefined>(undefined);
     const nftInfo = useLoaderData() as NFTInfo;
     const { accountId, nftId } = useParams<{ accountId: string; nftId: string }>();
     const [metadata, setMetadata] = useState<Metadata>({});
@@ -85,16 +81,22 @@ export default function NFTViewer() {
         getOffers();
     }, [nftInfo.URI, nftId]);
 
-    const handleAcceptOffer = async (offerId: string) => {
+    useEffect(() => {
+        xumm.user.account.then((account) => setAccount(account));
+    }, []);
+
+    const acceptOffer = async (offerId: string) => {
         setIsAccepting(true);
-        const success = await acceptOffer(offerId);
-        if (success) {
-            setOffers(offers.filter(offer => offer.nft_offer_index !== offerId));
-            alert('Offer accepted successfully!');
-        } else {
-            alert('Failed to accept offer. Please try again.');
+        const payload = await xumm.payload?.create({
+            TransactionType: 'NFTokenAcceptOffer',
+            NFTokenSellOffer: offerId
+        });
+        payload?.refs.qr_png && alert('NFTを受け取りました');
+
+        if (!payload?.pushed) {
+            console.log(payload?.refs.qr_png);
+            payload?.refs.qr_png && alert('QRコードを表示しました');
         }
-        setIsAccepting(false);
     };
 
     return (
@@ -143,17 +145,19 @@ export default function NFTViewer() {
             )}
 
             <h2>Offers</h2>
-            {offers.length > 0 ? (
+            { offers.length > 0 ? (
                 <ul>
                     {offers.map(offer => (
                         <li key={offer.nft_offer_index}>
                             Offer ID: {offer.nft_offer_index}, Amount: {offer.amount.toString()}, Owner: {offer.owner}
-                            <button
-                                onClick={() => handleAcceptOffer(offer.nft_offer_index)}
-                                disabled={isAccepting}
-                            >
-                                {isAccepting ? 'Accepting...' : 'Accept Offer'}
-                            </button>
+                            {account && (
+                                <button
+                                    onClick={() => acceptOffer(offer.nft_offer_index)}
+                                    disabled={isAccepting}
+                                >
+                                    {isAccepting ? 'Accepting...' : 'Accept Offer'}
+                                </button>
+                            )}
                         </li>
                     ))}
                 </ul>
