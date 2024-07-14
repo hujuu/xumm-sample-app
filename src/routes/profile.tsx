@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import {useState, useEffect, ChangeEvent} from 'react';
 import { Client, AccountNFTsRequest, AccountNFToken, convertHexToString } from 'xrpl';
 import Header from "../components/Header";
 import HeroImage from "../components/HeroImage";
@@ -14,6 +14,11 @@ export default function Profile() {
     const [account, setAccount] = useState<string | undefined>(undefined);
     const [nfts, setNfts] = useState<AccountNFToken[]>([]);
     const [metadataList, setMetadataList] = useState<{ [key: string]: any }>({});
+    const [inputValue, setInputValue] = useState('');
+
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+    };
 
     useEffect(() => {
         xumm.user.account.then((account) => setAccount(account));
@@ -161,48 +166,55 @@ export default function Profile() {
                                             <h3 className="mt-4 text-sm text-gray-700">{metadataList[nft.NFTokenID]?.name}</h3>
                                         </div>
                                         <dialog key={index} id={`my_modal_${index}`} className="modal">
-                                            <div className="modal-box w-10/12 max-w-5xl">
-                                                <h3 className="font-bold text-lg">{metadataList[nft.NFTokenID]?.name}</h3>
+                                            <div className="grid grid-cols-2 gap-4 modal-box w-10/12 max-w-5xl">
                                                 <div>
-                                                    <p><strong>NFT ID:</strong> {nft.NFTokenID}</p>
-                                                    {nft.URI && (
-                                                        <p><strong>URI:</strong> {convertHexToString(nft.URI)}</p>
-                                                    )}
-                                                    {metadataList[nft.NFTokenID] && (
-                                                        <div>
-                                                            <h4>Metadata:</h4>
-                                                            <pre>{JSON.stringify(metadataList[nft.NFTokenID], null, 2)}</pre>
-                                                        </div>
-                                                    )}
+                                                    <h3 className="font-bold text-lg">{metadataList[nft.NFTokenID]?.name}</h3>
+                                                    <p className="py-4"></p>
+                                                    <div
+                                                        className="overflow-hidden rounded-lg flex items-center justify-center">
+                                                        <img
+                                                            src={metadataList[nft.NFTokenID]?.image}
+                                                            alt={metadataList[nft.NFTokenID]?.image}
+                                                            className="w-1/3 h-1/3 rounded-lg"
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div
-                                                    className="overflow-hidden rounded-lg flex items-center justify-center">
-                                                    <img
-                                                        src={metadataList[nft.NFTokenID]?.image}
-                                                        alt={metadataList[nft.NFTokenID]?.name}
-                                                        className="w-1/3 h-1/3 rounded-lg"
-                                                    />
-                                                </div>
-                                                <div className="text-center">
-                                                    <a href={`/nft/${account}/${nft.NFTokenID}`} className="link">
-                                                        ギフトページを確認する
-                                                    </a>
-                                                </div>
-                                                <div className="flex items-center justify-center mt-8">
-                                                    <button className="btn btn-primary"
-                                                            onClick={() => createPresentOfferNFT(nft.NFTokenID)}>NFTをプレゼントする
-                                                    </button>
-                                                    <button className="btn btn-primary"
-                                                            onClick={() => createOfferNFT(nft.NFTokenID)}>オファーを作成する
-                                                    </button>
-                                                    <button className="btn btn-outline btn-warning"
-                                                            onClick={() => burnNFT(nft.NFTokenID)}>削除する
-                                                    </button>
-                                                </div>
-                                                <div className="modal-action">
-                                                    <form method="dialog">
-                                                        <button className="btn">Close</button>
-                                                    </form>
+                                                <div>
+                                                    <div className="flex mt-8">
+                                                        <label className="form-control w-full max-w-s">
+                                                            <div className="label">
+                                                                <span className="label-text">メッセージ</span>
+                                                                <span className="label-text-alt">最大全角512文字</span>
+                                                            </div>
+                                                            <input
+                                                                type="text"
+                                                                placeholder="Type here"
+                                                                className="input input-bordered w-full max-w-s"
+                                                                value={inputValue}
+                                                                onChange={handleInputChange}
+                                                            />
+                                                            <div className="label">
+                                                                <span className="label-text-alt"></span>
+                                                                <span className="label-text-alt"></span>
+                                                            </div>
+                                                        </label>
+                                                    </div>
+                                                    <div className="flex mt-8">
+                                                        <button className="btn btn-primary"
+                                                                onClick={() => createPresentOfferNFT(nft.NFTokenID)}>NFTをプレゼントする
+                                                        </button>
+                                                        <button className="btn btn-primary"
+                                                                onClick={() => createOfferNFT(nft.NFTokenID)}>オファーを作成する
+                                                        </button>
+                                                        <button className="btn btn-outline btn-warning"
+                                                                onClick={() => burnNFT(nft.NFTokenID)}>削除する
+                                                        </button>
+                                                    </div>
+                                                    <div className="modal-action">
+                                                        <form method="dialog">
+                                                            <button className="btn">Close</button>
+                                                        </form>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </dialog>
