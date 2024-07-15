@@ -53,11 +53,13 @@ a:hover {
   max-width: 315px;
   margin: 2em;
   border-radius: 10px;
-  display:inline-block;
+  display: flex; /* Flexboxを使用 */
+  flex-direction: column; /* 縦方向にレイアウト */
+  overflow: hidden; /* 内容がはみ出ないようにする */
 }
 
 .movie-header {
-  padding:0;
+  padding: 0;
   margin: 0;
   height: 367px;
   width: 100%;
@@ -68,6 +70,8 @@ a:hover {
 
 .header-icon-container {
   position: relative;
+  border-top-right-radius: 10px;
+  overflow: hidden; /* 画像がはみ出ないようにする */
 }
 
 .header-icon {
@@ -95,11 +99,17 @@ a:hover {
 .movie-card:hover {
   transform:scale(1.03);
   box-shadow: 0px 10px 25px rgba(0,0,0,.08);
+  height: 100%;
+  object-fit: cover; /* 画像のアスペクト比を維持しつつ、領域を埋める */
 }
 
 .movie-content {
   padding: 18px 18px 24px 18px;
   margin: 0;
+  flex-grow: 1; /* コンテンツを拡張して利用可能なスペースを埋める */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* コンテンツを均等に配置 */
 }
 
 .movie-content-header, .movie-info {
@@ -158,12 +168,12 @@ a:hover {
   .movie-card {
     width: 95%;
     max-width: 95%;
-    margin: 1em;
-    display: block;
+    margin: 1em auto; /* 中央揃え */
+    display: flex;
   }
 
   .container {
-    padding: 0;
+    padding: 1em 0; /* パディングを調整 */
     margin: 0;
   }
 }
