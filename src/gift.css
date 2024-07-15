@@ -4,6 +4,10 @@ body {
   font-weight: 400;
   font-size: 14px;
   color: #010b26;
+  margin: 0; /* bodyのマージンを削除 */
+  min-height: 100vh; /* 最小高さをビューポートの高さに設定 */
+  display: flex; /* Flexboxを使用 */
+  flex-direction: column; /* 縦方向にレイアウト */
 }
 
 * {
@@ -38,6 +42,8 @@ a:hover {
   margin-left: auto;
   margin-right: auto;
   justify-content: center;
+  flex-grow: 1; /* コンテナを拡張して利用可能なスペースを埋める */
+  padding: 2em 0; /* 上下のパディングを追加 */
 }
 
 .movie-card {

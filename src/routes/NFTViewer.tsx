@@ -129,22 +129,6 @@ export default function NFTViewer() {
                     </div>
                 </div>
             </div>
-            <h2>NFT Information</h2>
-            <p>Account ID: {accountId}</p>
-            <p>NFT ID: {nftId}</p>
-            <p>Issuer: {nftInfo.Issuer}</p>
-            <p>Token Taxon: {nftInfo.NFTokenTaxon}</p>
-            <p>Owner: {nftInfo.owner}</p>
-            <p>URI: {nftInfo.URI ? convertHexToString(nftInfo.URI) : 'N/A'}</p>
-            {metadata.name && <p>Name: {metadata.name}</p>}
-            {metadata.description && (
-                <div>
-                    <h3>Description</h3>
-                    <p>{metadata.description}</p>
-                </div>
-            )}
-
-            <h2>Offers</h2>
             { offers.length > 0 ? (
                 <ul>
                     {offers.map(offer => (
