@@ -115,7 +115,6 @@ export default function NFTViewer() {
                             <div>誕生日おめでとう！いつもありがとう！</div>
                             <div>{metadata.name || '誕生日おめでとう！いつもありがとう！'}</div>
                         </div>
-
                         <div className="movie-info">
                             <div className="info-section">
                                 <label>Date</label>
@@ -146,7 +145,7 @@ export default function NFTViewer() {
                     ))}
                 </ul>
             ) : (
-                <p>No offers available for this NFT.</p>
+                <p>No offers available for this NFT.{accountId}</p>
             )}
         </div>
     );
