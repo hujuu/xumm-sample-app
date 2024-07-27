@@ -141,14 +141,18 @@ export default function NFTViewer() {
                                 Offer ID: {offer.nft_offer_index}, Amount: {offer.amount.toString()}, Owner: {offer.owner}
                             </div>
                             {account ? (
-                                <button
-                                    className="btn btn-outline btn-primary"
-                                    onClick={() => acceptOffer(offer.nft_offer_index)}
-                                    disabled={isAccepting}
-                                >
-                                    {isAccepting ? 'Accepting...' : 'NFTを受け取る'}
-                                </button>
+                                account === nftInfo.owner ? (
+                                    <></>
                                 ):(
+                                    <button
+                                        className="btn btn-outline btn-primary"
+                                        onClick={() => acceptOffer(offer.nft_offer_index)}
+                                        disabled={isAccepting}
+                                    >
+                                        {isAccepting ? 'Accepting...' : 'NFTを受け取る'}
+                                    </button>
+                                )
+                            ):(
                                 <div className="grid justify-items-center">
                                     <button
                                         className="btn btn-outline btn-info"
@@ -162,7 +166,7 @@ export default function NFTViewer() {
             ) : (
                 <p className="hidden">No offers available for this NFT.{accountId}</p>
             )}
-            {account && (accountId === nftInfo.Issuer || accountId === nftInfo.owner ) && (
+            {account && (account === nftInfo.Issuer || account === nftInfo.owner ) && (
                 <GiftList />
             )}
         </div>
