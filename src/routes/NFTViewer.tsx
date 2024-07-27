@@ -7,6 +7,7 @@ import {
 } from 'xrpl';
 import { xumm } from "../store/XummStore";
 import '../gift.css';
+import GiftList from "../components/GiftList.tsx";
 
 interface NFTInfo {
     NFTokenID: string;
@@ -160,6 +161,9 @@ export default function NFTViewer() {
                 </ul>
             ) : (
                 <p className="hidden">No offers available for this NFT.{accountId}</p>
+            )}
+            {account && (accountId === nftInfo.Issuer || accountId === nftInfo.owner ) && (
+                <GiftList />
             )}
         </div>
     );
