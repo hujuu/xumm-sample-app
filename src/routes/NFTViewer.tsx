@@ -108,7 +108,7 @@ export default function NFTViewer() {
     useEffect(() => {
         const getApiData = async () => {
             try {
-                const result = await fetchData('https://irodori-api.vercel.app/api/gifts/12343425fdage3r2');
+                const result = await fetchData(`https://irodori-api.vercel.app/api/gifts/${nftId}`);
                 setData(result);
             } catch (error) {
                 console.error(`Error in fetching: ${error}`);
