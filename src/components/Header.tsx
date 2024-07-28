@@ -3,6 +3,7 @@ import { Client, AccountInfoRequest } from 'xrpl';
 
 type HeaderProps = {
     account: string | undefined;
+    network: string | undefined;
     onConnect: () => void;
     disConnect: () => void;
 };
@@ -14,7 +15,7 @@ function truncateString(str: string) {
     return str;
 }
 
-export default function Header({ account, onConnect, disConnect } : HeaderProps) {
+export default function Header({ account, network, onConnect, disConnect } : HeaderProps) {
     const [balance, setBalance] = useState<string | undefined>(undefined);
 
     useEffect(() => {
@@ -43,6 +44,15 @@ export default function Header({ account, onConnect, disConnect } : HeaderProps)
         <div className="navbar bg-amber-50 border-b border-gray-200">
             <div className="flex-1">
                 <a href={"/"} className="btn btn-ghost text-xl">Fun Pass</a>
+                {network && (
+                    <span
+                        className="inline-flex items-center gap-x-1.5 rounded-md px-2 py-1 text-xs font-medium text-gray-900 ring-1 ring-inset ring-gray-200">
+                        <svg viewBox="0 0 6 6" aria-hidden="true" className="h-1.5 w-1.5 fill-yellow-500">
+                            <circle r={3} cx={3} cy={3}/>
+                        </svg>
+                        {network}
+                    </span>
+                )}
             </div>
             {account && (
                 <>
