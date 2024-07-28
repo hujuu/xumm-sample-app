@@ -8,6 +8,7 @@ import {
 import { xumm } from "../store/XummStore";
 import '../gift.css';
 import GiftList from "../components/GiftList.tsx";
+import axios from "axios";
 
 interface NFTInfo {
     NFTokenID: string;
@@ -22,6 +23,13 @@ interface Metadata {
     description?: string;
     image?: string;
 }
+
+type GiftData = {
+    _id: string;
+    nft_id: string;
+    message: string;
+    created_at: string;
+};
 
 const fetchMetadata = async (uri: string): Promise<Metadata> => {
     try {
@@ -54,8 +62,19 @@ const fetchOffers = async (nftId: string): Promise<NFTOffer[]> => {
     }
 };
 
+const fetchData = async (url: string) => {
+    try {
+        const response = await axios.get(url);
+        return response.data;
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;  // Here we throw the error to handle it in the place of call
+    }
+};
+
 export default function NFTViewer() {
     const [account, setAccount] = useState<string | undefined>(undefined);
+    const [data, setData] = useState<GiftData | null>(null);
     const nftInfo = useLoaderData() as NFTInfo;
     const { accountId, nftId } = useParams<{ accountId: string; nftId: string }>();
     const [metadata, setMetadata] = useState<Metadata>({});
@@ -84,6 +103,18 @@ export default function NFTViewer() {
 
     useEffect(() => {
         xumm.user.account.then((account) => setAccount(account));
+    }, []);
+
+    useEffect(() => {
+        const getApiData = async () => {
+            try {
+                const result = await fetchData('https://irodori-api.vercel.app/api/gifts/12343425fdage3r2');
+                setData(result);
+            } catch (error) {
+                console.error(`Error in fetching: ${error}`);
+            }
+        };
+        getApiData();
     }, []);
 
     const connect = async () => {
@@ -117,7 +148,7 @@ export default function NFTViewer() {
                     </div>
                     <div className="movie-content">
                         <div className="movie-content-header">
-                            <div>誕生日おめでとう！いつもありがとう！</div>
+                            <div>{data && <div>{data.message}</div>}</div>
                             <div>{metadata.name || '誕生日おめでとう！いつもありがとう！'}</div>
                         </div>
                         <div className="movie-info">
