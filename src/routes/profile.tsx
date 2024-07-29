@@ -13,11 +13,26 @@ const fetchMetadata = async (uri: string) => {
 
 export default function Profile() {
     const [account, setAccount] = useState<string | undefined>(undefined);
+    const [networkEndpoint, setNetworkEndpoint] = useState<string | undefined>(undefined);
     const [nfts, setNfts] = useState<AccountNFToken[]>([]);
     const [metadataList, setMetadataList] = useState<{ [key: string]: any }>({});
 
     useEffect(() => {
-        xumm.user.account.then((account) => setAccount(account));
+        const fetchAccountAndNetwork = async () => {
+            try {
+                const accountInfo = await xumm.user.account;
+                setAccount(accountInfo);
+
+                if (accountInfo) {
+                    const endpoint = await xumm.user.networkEndpoint;
+                    setNetworkEndpoint(endpoint);
+                }
+            } catch (error) {
+                console.error("Error fetching account or network info:", error);
+            }
+        };
+
+        fetchAccountAndNetwork();
     }, []);
 
     useEffect(() => {
@@ -130,7 +145,7 @@ export default function Profile() {
 
     return (
         <main>
-            <Header account={account} onConnect={connect} disConnect={disconnect} />
+            <Header account={account} network={networkEndpoint} onConnect={connect} disConnect={disconnect} />
             <HeroImage account={account} onConnect={connect} />
             {account && (
                 <div className="bg-white">
