@@ -73,7 +73,7 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
                                         <div className="flex mt-8">
                                             <label className="form-control w-full max-w-s">
                                                 <div className="label">
-                                                <span className="label-text">メッセージ</span>
+                                                    <span className="label-text">メッセージ</span>
                                                     <span className="label-text-alt">最大全角512文字</span>
                                                 </div>
                                                 <input
@@ -85,6 +85,26 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
                                                 />
                                                 <div className="label">
                                                     <span className="label-text-alt"></span>
+                                                    <span className="label-text-alt"></span>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        <div className="flex mt-8">
+                                            <label className="form-control w-full max-w-s">
+                                                <div className="label">
+                                                    <span className="label-text">ギフトURL</span>
+                                                    <span className="label-text-alt">最大全角512文字</span>
+                                                </div>
+                                                <input
+                                                    type="text"
+                                                    placeholder="Type here"
+                                                    className="input input-bordered w-full max-w-s"
+                                                    value={inputValue}
+                                                    onChange={handleInputChange}
+                                                />
+                                                <div className="label">
+                                                    <span className="label-text-alt">                                                        eGiftやvoucherなどのURLを入れることができます。このURLはNFTを受け取ってNFTの所有者となった人だけが見ることができます。
+</span>
                                                     <span className="label-text-alt"></span>
                                                 </div>
                                             </label>
