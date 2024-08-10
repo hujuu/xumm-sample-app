@@ -149,11 +149,8 @@ const NFTBatchMinter = () => {
             if (!account) {
                 throw new Error('No account connected');
             }
-            if (tickets.length < nftCount) {
-                throw new Error(`Not enough tickets. Found ${tickets.length}, need ${nftCount}.`);
-            }
 
-            for (let i = 0; i < nftCount; i++) {
+            for (let i = 0; i < tickets.length; i++) {
                 const transactionBlob: NFTokenMintTransaction = {
                     TransactionType: 'NFTokenMint',
                     Account: account,
