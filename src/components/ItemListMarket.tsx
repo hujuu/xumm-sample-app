@@ -137,7 +137,8 @@ export default function ItemListMarket({ account }: ItemListProps) {
                                 <div
                                     onClick={() => (document.getElementById(`market_modal_${index}`) as HTMLDialogElement).showModal()}
                                     className="group">
-                                    <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+                                    <div
+                                        className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
                                         <img
                                             src={metadata?.image}
                                             alt={metadata?.name}
