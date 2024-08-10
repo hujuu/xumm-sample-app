@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { xumm } from "../store/XummStore";
-import { convertStringToHex, Client } from "xrpl";
+import {convertStringToHex, Client} from "xrpl";
+import Header from "../components/Header.tsx";
 
 type TicketCreate = {
     TransactionType: 'TicketCreate';
@@ -26,9 +27,37 @@ const NFTBatchMinter = () => {
     const [transferFee, setTransferFee] = useState(0);
     const [result, setResult] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [account, setAccount] = useState<string | null>(null);
     const [tickets, setTickets] = useState<number[]>([]);
     const [step, setStep] = useState<'connect' | 'createTickets' | 'mintNFTs'>('connect');
+    const [account, setAccount] = useState<string | undefined>(undefined);
+    const [networkEndpoint, setNetworkEndpoint] = useState<string | undefined>(undefined);
+
+    useEffect(() => {
+        const fetchAccountAndNetwork = async () => {
+            try {
+                const accountInfo = await xumm.user.account;
+                setAccount(accountInfo);
+
+                if (accountInfo) {
+                    const endpoint = await xumm.user.networkEndpoint;
+                    setNetworkEndpoint(endpoint);
+                }
+            } catch (error) {
+                console.error("Error fetching account or network info:", error);
+            }
+        };
+
+        fetchAccountAndNetwork();
+    }, []);
+
+    const connect = async () => {
+        await xumm.authorize();
+    };
+
+    const disconnect = async () => {
+        await xumm.logout();
+        setAccount(undefined);
+    };
 
     useEffect(() => {
         const checkAccount = async () => {
@@ -150,89 +179,92 @@ const NFTBatchMinter = () => {
     };
 
     return (
-        <div className="p-4 max-w-xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">NFT Batch Minter (XAMAN)</h1>
-            {step === 'connect' && (
-                <button
-                    onClick={connectWallet}
-                    className="mb-4 p-2 bg-green-500 text-white rounded hover:bg-green-600"
-                >
-                    Connect XAMAN Wallet
-                </button>
-            )}
-            {account && <p className="mb-4">Connected Account: {account}</p>}
-            <div className="space-y-4">
-                <div>
-                    <label className="block mb-1">NFT Count:</label>
-                    <input
-                        type="number"
-                        value={nftCount}
-                        onChange={(e) => setNftCount(parseInt(e.target.value))}
-                        className="w-full p-2 border rounded"
-                    />
-                </div>
-                <div>
-                    <label className="block mb-1">Token URL:</label>
-                    <input
-                        type="text"
-                        value={tokenUrl}
-                        onChange={(e) => setTokenUrl(e.target.value)}
-                        className="w-full p-2 border rounded"
-                    />
-                </div>
-                <div>
-                    <label className="block mb-1">Flags:</label>
-                    <input
-                        type="number"
-                        value={flags}
-                        onChange={(e) => setFlags(parseInt(e.target.value))}
-                        className="w-full p-2 border rounded"
-                    />
-                </div>
-                <div>
-                    <label className="block mb-1">Transfer Fee:</label>
-                    <input
-                        type="number"
-                        value={transferFee}
-                        onChange={(e) => setTransferFee(parseInt(e.target.value))}
-                        className="w-full p-2 border rounded"
-                    />
-                </div>
-                {step === 'createTickets' && (
+        <main>
+            <Header account={account} network={networkEndpoint} onConnect={connect} disConnect={disconnect}/>
+            <div className="p-4 max-w-xl mx-auto">
+                <h1 className="text-2xl font-bold mb-4">NFT Batch Minter (XAMAN)</h1>
+                {step === 'connect' && (
                     <button
-                        onClick={createTickets}
-                        disabled={isLoading}
-                        className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
+                        onClick={connectWallet}
+                        className="mb-4 p-2 bg-green-500 text-white rounded hover:bg-green-600"
                     >
-                        {isLoading ? 'Creating Tickets...' : 'Create Tickets'}
+                        Connect XAMAN Wallet
                     </button>
                 )}
-                {step === 'mintNFTs' && (
-                    <>
+                {account && <p className="mb-4">Connected Account: {account}</p>}
+                <div className="space-y-4">
+                    <div>
+                        <label className="block mb-1">NFT Count:</label>
+                        <input
+                            type="number"
+                            value={nftCount}
+                            onChange={(e) => setNftCount(parseInt(e.target.value))}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1">Token URL:</label>
+                        <input
+                            type="text"
+                            value={tokenUrl}
+                            onChange={(e) => setTokenUrl(e.target.value)}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1">Flags:</label>
+                        <input
+                            type="number"
+                            value={flags}
+                            onChange={(e) => setFlags(parseInt(e.target.value))}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1">Transfer Fee:</label>
+                        <input
+                            type="number"
+                            value={transferFee}
+                            onChange={(e) => setTransferFee(parseInt(e.target.value))}
+                            className="w-full p-2 border rounded"
+                        />
+                    </div>
+                    {step === 'createTickets' && (
                         <button
-                            onClick={fetchTickets}
+                            onClick={createTickets}
                             disabled={isLoading}
-                            className="w-full p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:bg-gray-400"
-                        >
-                            Fetch Tickets
-                        </button>
-                        <button
-                            onClick={mintNFTs}
-                            disabled={isLoading || tickets.length < nftCount}
                             className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
                         >
-                            {isLoading ? 'Minting NFTs...' : 'Mint NFTs'}
+                            {isLoading ? 'Creating Tickets...' : 'Create Tickets'}
                         </button>
-                    </>
-                )}
-                {result && (
-                    <div className="mt-4 p-4 bg-gray-100 rounded">
-                        <h2 className="text-lg font-semibold mb-2">Result</h2>
-                        <p>{result}</p>
-                    </div>
-                )}
+                    )}
+                    {step === 'mintNFTs' && (
+                        <>
+                            <button
+                                onClick={fetchTickets}
+                                disabled={isLoading}
+                                className="w-full p-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 disabled:bg-gray-400"
+                            >
+                                Fetch Tickets
+                            </button>
+                            <button
+                                onClick={mintNFTs}
+                                disabled={isLoading || tickets.length < nftCount}
+                                className="w-full p-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-gray-400"
+                            >
+                                {isLoading ? 'Minting NFTs...' : 'Mint NFTs'}
+                            </button>
+                        </>
+                    )}
+                    {result && (
+                        <div className="mt-4 p-4 bg-gray-100 rounded">
+                            <h2 className="text-lg font-semibold mb-2">Result</h2>
+                            <p>{result}</p>
+                        </div>
+                    )}
+                </div>
             </div>
-        </div>
+        </main>
     );
 };
 
