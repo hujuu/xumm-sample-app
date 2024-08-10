@@ -9,9 +9,9 @@ const NFTBatchMinter = () => {
     const [transferFee, setTransferFee] = useState(0);
     const [result, setResult] = useState('');
     const [isLoading, setIsLoading] = useState(false);
-    const [account, setAccount] = useState(null);
-    const [tickets, setTickets] = useState([]);
-    const [step, setStep] = useState('connect'); // 'connect', 'createTickets', 'mintNFTs'
+    const [account, setAccount] = useState<string | null>(null);
+    const [tickets, setTickets] = useState<number[]>([]);
+    const [step, setStep] = useState<'connect' | 'createTickets' | 'mintNFTs'>('connect');
 
     useEffect(() => {
         const checkAccount = async () => {
@@ -28,10 +28,14 @@ const NFTBatchMinter = () => {
         try {
             await xumm.authorize();
             const userAccount = await xumm.user.account;
-            setAccount(userAccount);
-            setStep('createTickets');
+            if (userAccount) {
+                setAccount(userAccount);
+                setStep('createTickets');
+            } else {
+                throw new Error('Failed to get user account');
+            }
         } catch (error) {
-            setResult(`Error connecting wallet: ${error.message}`);
+            setResult(`Error connecting wallet: ${(error as Error).message}`);
         }
     };
 
@@ -39,20 +43,21 @@ const NFTBatchMinter = () => {
         setIsLoading(true);
         setResult('');
         try {
+            if (!account) {
+                throw new Error('No account connected');
+            }
             const ticketCreate = {
                 TransactionType: 'TicketCreate',
                 Account: account,
                 TicketCount: nftCount,
             };
 
-            // const ticketResult = await xumm.payload.createAndSubscribe(ticketCreate);
-            // await ticketResult.resolved;
             await xumm.payload?.createAndSubscribe(ticketCreate);
 
             setResult('Tickets created successfully. Please check your XAMAN app for confirmation.');
             setStep('mintNFTs');
         } catch (error) {
-            setResult(`Error creating tickets: ${error.message}`);
+            setResult(`Error creating tickets: ${(error as Error).message}`);
         } finally {
             setIsLoading(false);
         }
@@ -61,7 +66,10 @@ const NFTBatchMinter = () => {
     const fetchTickets = async () => {
         setIsLoading(true);
         try {
-            const client = new Client('wss://s.altnet.rippletest.net:51233'); // Testnet. Change to mainnet when ready.
+            if (!account) {
+                throw new Error('No account connected');
+            }
+            const client = new Client('wss://s.altnet.rippletest.net:51233');
             await client.connect();
 
             const response = await client.request({
@@ -75,14 +83,14 @@ const NFTBatchMinter = () => {
             if (response.result.account_objects) {
                 const fetchedTickets = response.result.account_objects
                     .filter(obj => obj.LedgerEntryType === 'Ticket')
-                    .map(ticket => ticket.TicketSequence);
+                    .map(ticket => (ticket as any).TicketSequence as number);
                 setTickets(fetchedTickets);
                 setResult(`Found ${fetchedTickets.length} tickets.`);
             } else {
                 setResult('No tickets found.');
             }
         } catch (error) {
-            setResult(`Error fetching tickets: ${error.message}`);
+            setResult(`Error fetching tickets: ${(error as Error).message}`);
         } finally {
             setIsLoading(false);
         }
@@ -92,6 +100,9 @@ const NFTBatchMinter = () => {
         setIsLoading(true);
         setResult('');
         try {
+            if (!account) {
+                throw new Error('No account connected');
+            }
             if (tickets.length < nftCount) {
                 throw new Error(`Not enough tickets. Found ${tickets.length}, need ${nftCount}.`);
             }
@@ -105,24 +116,17 @@ const NFTBatchMinter = () => {
                     TransferFee: transferFee,
                     TicketSequence: tickets[i],
                     NFTokenTaxon: i,
-                    Sequence: 0, // 明示的に Sequence を 0 に設定
+                    Sequence: 0,
                 };
 
-                // const result = await xumm.payload?.createAndSubscribe(transactionBlob);
-                // const resolvedData = await result.resolved;
                 await xumm.payload?.createAndSubscribe(transactionBlob);
-
-                // トランザクションの結果を確認
-                // if (resolvedData.signed === false) {
-                //     throw new Error('Transaction was not signed');
-                // }
 
                 setResult((prev) => prev + `\nMinted NFT ${i + 1}/${nftCount}`);
             }
 
             setResult((prev) => prev + `\nSuccessfully minted ${nftCount} NFTs. Check your XAMAN app for details.`);
         } catch (error) {
-            setResult(`Error minting NFTs: ${error.message}`);
+            setResult(`Error minting NFTs: ${(error as Error).message}`);
         } finally {
             setIsLoading(false);
         }
