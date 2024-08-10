@@ -9,6 +9,7 @@ import Root from "./routes/root";
 import Profile from "./routes/profile.tsx";
 import NFTViewer from "./routes/NFTViewer.tsx";
 import {nftLoader} from "./composables/nftLoader.ts";
+import NFTBatchMinter from "./routes/BatchMint.tsx";
 
 const router = createBrowserRouter([
     {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         path: "/nft/:accountId/:nftId",
         element: <NFTViewer />,
         loader: nftLoader,
+    },
+    {
+        path: "/nft-mint",
+        element: <NFTBatchMinter />,
     },
 ]);
 
