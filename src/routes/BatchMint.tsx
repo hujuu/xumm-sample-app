@@ -8,6 +8,17 @@ type TicketCreate = {
     TicketCount: number;
 };
 
+type NFTokenMintTransaction = {
+    TransactionType: 'NFTokenMint';
+    Account: string;
+    URI: string;
+    Flags: number;
+    TransferFee: number;
+    TicketSequence: number;
+    NFTokenTaxon: number;
+    Sequence: number;
+};
+
 const NFTBatchMinter = () => {
     const [nftCount, setNftCount] = useState(1);
     const [tokenUrl, setTokenUrl] = useState('ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi');
@@ -114,7 +125,7 @@ const NFTBatchMinter = () => {
             }
 
             for (let i = 0; i < nftCount; i++) {
-                const transactionBlob = {
+                const transactionBlob: NFTokenMintTransaction = {
                     TransactionType: 'NFTokenMint',
                     Account: account,
                     URI: convertStringToHex(tokenUrl),
