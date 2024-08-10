@@ -2,6 +2,12 @@ import { useState, useEffect } from 'react';
 import { xumm } from "../store/XummStore";
 import { convertStringToHex, Client } from "xrpl";
 
+type TicketCreate = {
+    TransactionType: 'TicketCreate';
+    Account: string;
+    TicketCount: number;
+};
+
 const NFTBatchMinter = () => {
     const [nftCount, setNftCount] = useState(1);
     const [tokenUrl, setTokenUrl] = useState('ipfs://bafybeigdyrzt5sfp7udm7hu76uh7y26nf4dfuylqabf3oclgtqy55fbzdi');
@@ -46,7 +52,7 @@ const NFTBatchMinter = () => {
             if (!account) {
                 throw new Error('No account connected');
             }
-            const ticketCreate = {
+            const ticketCreate: TicketCreate = {
                 TransactionType: 'TicketCreate',
                 Account: account,
                 TicketCount: nftCount,
