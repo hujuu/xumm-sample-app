@@ -1,6 +1,5 @@
-import { xumm } from "../store/XummStore";
-import {convertStringToHex} from "xrpl";
 import {useState} from "react";
+import {mintNFT, Product} from "../composables/mintNFT.ts";
 
 type ItemListProps = {
     account: string | undefined;
@@ -71,28 +70,18 @@ export default function ItemList({ account }: ItemListProps) {
         setInputValue(e.target.value);
     };
 
-    const mintNFT = async (uriString: string, message: string) => {
-        const payload = await xumm.payload?.create({
-            TransactionType: "NFTokenMint",
-            Account: account,
-            TransferFee: 5 * 1000, // 5%
-            URI: convertStringToHex(uriString),
-            NFTokenTaxon: 0, // 0は一般的なトークン
-            Flags: 1 + 8, // Burnable, Transferable
-            Memos: [
-                {
-                    "Memo": {
-                        "MemoType": "746578742f706c61696e", // "text/plain"
-                        "MemoData": convertStringToHex(message)
-                    }
-                }
-            ],
-        });
-        payload?.refs.qr_png && alert('Xummアプリからmintを確定してください');
+    const handleMintNFT = async (product: Product) => {
+        if (!account) {
+            alert('アカウントが接続されていません。先にXummでログインしてください。');
+            return;
+        }
 
-        if (!payload?.pushed) {
-            console.log(payload?.refs.qr_png);
-            payload?.refs.qr_png && alert('QRコードを表示しました');
+        try {
+            await mintNFT(product, inputValue, account);
+            alert('NFTのミントが成功しました！');
+        } catch (error) {
+            console.error('NFTのミント中にエラーが発生しました:', error);
+            alert('NFTのミント中にエラーが発生しました。もう一度お試しください。');
         }
     };
 
@@ -183,7 +172,9 @@ export default function ItemList({ account }: ItemListProps) {
                                         </div>
                                         <div className="flex mt-8">
                                             <button className="btn btn-primary"
-                                                    onClick={() => mintNFT(product.uri, inputValue)}>ギフトをmintする
+                                                    onClick={() => handleMintNFT(product)}
+                                                    disabled={!account}
+                                            >ギフトをmintする
                                             </button>
                                         </div>
                                         <div className="modal-action">
