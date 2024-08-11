@@ -4,9 +4,14 @@ import axios from 'axios';
 
 export default function ItemListOwn({ account, nfts, metadataList, createOfferNFT, createPresentOfferNFT, burnNFT }: any) {
     const [inputValue, setInputValue] = useState('');
+    const [inputUrl, setInputUrl] = useState('');
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
+    };
+
+    const handleUrlChange = (e: ChangeEvent<HTMLInputElement>) => {
+        setInputUrl(e.target.value);
     };
 
     const handleSendGift = async (nftId: string) => {
@@ -14,7 +19,8 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
             createPresentOfferNFT(nftId)
             const response = await axios.post('https://irodori-api.vercel.app/api/gifts', {
                 nft_id: nftId,
-                message: inputValue
+                message: inputValue,
+                gift_urls: [{url: inputUrl}],
             });
             console.log('Gift sent successfully:', response.data);
         } catch (error) {
@@ -99,8 +105,8 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
                                                     type="text"
                                                     placeholder="Type here"
                                                     className="input input-bordered w-full max-w-s"
-                                                    value={inputValue}
-                                                    onChange={handleInputChange}
+                                                    value={inputUrl}
+                                                    onChange={handleUrlChange}
                                                 />
                                                 <div className="label">
                                                     <span className="label-text-alt">                                                        eGiftやvoucherなどのURLを入れることができます。このURLはNFTを受け取ってNFTの所有者となった人だけが見ることができます。
