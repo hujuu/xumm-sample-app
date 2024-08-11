@@ -28,6 +28,7 @@ type GiftData = {
     _id: string;
     nft_id: string;
     message: string;
+    gift_urls: { url: string }[];
     created_at: string;
 };
 
@@ -149,7 +150,7 @@ export default function NFTViewer() {
                     <div className="movie-content">
                         <div className="movie-content-header">
                             <div>{data && <div>{data.message}</div>}</div>
-                            <div>{metadata.name || '誕生日おめでとう！いつもありがとう！'}</div>
+                            <div>{metadata.name}</div>
                         </div>
                         <div className="movie-info">
                             <div className="info-section">
@@ -197,8 +198,8 @@ export default function NFTViewer() {
             ) : (
                 <p className="hidden">No offers available for this NFT.{accountId}</p>
             )}
-            {account && (account === nftInfo.Issuer || account === nftInfo.owner ) && (
-                <PresentList />
+            {account && (account === nftInfo.Issuer || account === nftInfo.owner ) && data?.gift_urls && (
+                <PresentList urls={data?.gift_urls} />
             )}
         </div>
     );

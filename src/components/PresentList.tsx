@@ -1,7 +1,7 @@
 import { Player } from '@lottiefiles/react-lottie-player'
 import Animation from './animation.json'
 
-export default function PresentList() {
+export default function PresentList({urls}: { urls: { url: string }[]}) {
     return (
         <div className="">
             <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-4 lg:max-w-7xl lg:px-8">
@@ -30,7 +30,7 @@ export default function PresentList() {
                 <div className='flex justify-center'>
                     <a
                         className="btn btn-active btn-neutral"
-                        href="https://xumm.app/detect/xapp:xaman.voucher/qr?xAppVoucher=EDA8D7B8094EF810C4CF4FF0F9F6DA9DBD3CAC60D53D95E62232EDAE50347D7278"
+                        href={urls[0].url}
                         target={"_blank"}
                     >
                         <ins>ギフトを開く</ins>
