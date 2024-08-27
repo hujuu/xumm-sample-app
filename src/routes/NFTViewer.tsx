@@ -73,6 +73,15 @@ const fetchData = async (url: string) => {
     }
 };
 
+function convertDateFormat(dateString: string): string {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+
+    return `${year}/${month}/${day}`;
+}
+
 export default function NFTViewer() {
     const [account, setAccount] = useState<string | undefined>(undefined);
     const [data, setData] = useState<GiftData | null>(null);
@@ -150,12 +159,11 @@ export default function NFTViewer() {
                     <div className="movie-content">
                         <div className="movie-content-header">
                             <div>{data && <div>{data.message}</div>}</div>
-                            <div>{metadata.name}</div>
                         </div>
                         <div className="movie-info">
                             <div className="info-section">
                                 <label>Date</label>
-                                <span>2024/07/05</span>
+                                <span>{data && <div>{convertDateFormat(data.created_at)}</div>}</span>
                             </div>
                             <div className="info-section">
                                 <label>From</label>

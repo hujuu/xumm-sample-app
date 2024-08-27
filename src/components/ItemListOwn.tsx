@@ -60,17 +60,19 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
                                 <div className="grid grid-cols-2 gap-4 modal-box w-10/12 max-w-5xl">
                                     <div>
                                         <h3 className="font-bold text-lg">{metadataList[nft.NFTokenID]?.name}</h3>
-                                        <p className="py-4"></p>
                                         <div
-                                            className="overflow-hidden rounded-lg flex items-center justify-center">
+                                            className="py-10 overflow-hidden rounded-lg flex items-center justify-center">
                                             <img
                                                 src={metadataList[nft.NFTokenID]?.image}
                                                 alt={metadataList[nft.NFTokenID]?.image}
                                                 className="w-1/3 h-1/3 rounded-lg"
                                             />
                                         </div>
-                                        <div className="text-center">
-                                            <a href={`/nft/${account}/${nft.NFTokenID}`} className="link">
+                                        <div className="text-center mt-1">
+                                            <a
+                                                href={`/nft/${account}/${nft.NFTokenID}`}
+                                                className="link"
+                                                target="_blank">
                                                 ギフトページを確認する
                                             </a>
                                         </div>
@@ -109,18 +111,18 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
                                                     onChange={handleUrlChange}
                                                 />
                                                 <div className="label">
-                                                    <span className="label-text-alt">                                                        eGiftやvoucherなどのURLを入れることができます。このURLはNFTを受け取ってNFTの所有者となった人だけが見ることができます。
-</span>
-                                                    <span className="label-text-alt"></span>
+                                                    <span className="label-text-alt">
+                                                        eGiftやvoucherなどのURLを入れることができます。このURLはNFTを受け取ってNFTの所有者となった人だけが見ることができます。
+                                                    </span>
                                                 </div>
                                             </label>
                                         </div>
-                                        <div className="flex mt-8">
+                                        <div className="flex mt-8 gap-2">
                                             <button className="btn btn-primary"
                                                     onClick={() => handleSendGift(nft.NFTokenID)}>NFTをプレゼントする
                                             </button>
-                                            <button className="btn btn-primary"
-                                                    onClick={() => createOfferNFT(nft.NFTokenID)}>オファーを作成する
+                                            <button className="btn btn-neutral"
+                                                    onClick={() => createOfferNFT(nft.NFTokenID)}>出品する
                                             </button>
                                             <button className="btn btn-outline btn-warning"
                                                     onClick={() => burnNFT(nft.NFTokenID)}>削除する
@@ -128,7 +130,7 @@ export default function ItemListOwn({ account, nfts, metadataList, createOfferNF
                                         </div>
                                         <div className="modal-action">
                                             <form method="dialog">
-                                                <button className="btn">Close</button>
+                                                <button className="btn">閉じる</button>
                                             </form>
                                         </div>
                                     </div>
