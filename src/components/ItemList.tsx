@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useRef, useState} from "react";
 import {mintNFT, Product} from "../composables/mintNFT.ts";
 
 type ItemListProps = {
@@ -63,7 +63,8 @@ const products = [
 ]
 
 export default function ItemList({ account }: ItemListProps) {
-    const [inputValue, setInputValue] = useState('');  // 初期値は空文字
+    const [inputValue, setInputValue] = useState('');
+    const modalRefs = useRef<(HTMLDialogElement | null)[]>([]);
 
     const handleInputChange = (e: any) => {
         // inputからの新しい値をセットする
@@ -78,7 +79,7 @@ export default function ItemList({ account }: ItemListProps) {
 
         try {
             await mintNFT(product, inputValue, account);
-            alert('NFTのミントが成功しました！');
+            modalRefs.current[product.id]?.close();
         } catch (error) {
             console.error('NFTのミント中にエラーが発生しました:', error);
             alert('NFTのミント中にエラーが発生しました。もう一度お試しください。');
@@ -102,7 +103,7 @@ export default function ItemList({ account }: ItemListProps) {
                     {products.map((product) => (
                         <div key={product.id}>
                             <div
-                                onClick={() => (document.getElementById(`my_modal_${product.id}`) as HTMLDialogElement).showModal()}
+                                onClick={() => modalRefs.current[product.id]?.showModal()}
                                 className="group">
                                 <div
                                     className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-lg bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
@@ -124,7 +125,7 @@ export default function ItemList({ account }: ItemListProps) {
                                     {product.price}
                                 </p>
                             </div>
-                            <dialog key={product.id} id={`my_modal_${product.id}`} className="modal">
+                            <dialog ref={(el) => modalRefs.current[product.id] = el} className="modal">
                                 <div className="grid grid-cols-2 gap-4 modal-box w-10/12 max-w-5xl">
                                     <div>
                                         <h3 className="font-bold text-lg">{product.name}</h3>
