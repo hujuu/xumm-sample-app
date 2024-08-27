@@ -167,7 +167,7 @@ export default function NFTViewer() {
                             </div>
                             <div className="info-section">
                                 <label>From</label>
-                                <span>James</span>
+                                <span>Ken</span>
                             </div>
                         </div>
                     </div>

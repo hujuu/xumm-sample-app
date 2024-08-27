@@ -47,7 +47,6 @@ export default function ItemListMarket({ account }: ItemListProps) {
                     // XRPLedger特有のエラー処理
                     console.error('XRPLedgerエラー:', error.message);
                 } else if (error instanceof Error) {
-                    // その他の一般的なエラー処理
                     console.error('一般エラー:', error.message);
                 }
                 // 必要に応じてユーザーにエラーを通知
