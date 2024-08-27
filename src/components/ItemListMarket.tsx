@@ -29,17 +29,31 @@ export default function ItemListMarket({ account }: ItemListProps) {
 
         const fetchNFTs = async () => {
             const client = new Client('wss://testnet.xrpl-labs.com');
-            await client.connect();
+            try {
+                await client.connect();
 
-            const request: AccountNFTsRequest = {
-                command: 'account_nfts',
-                account: account,
-            };
+                const request: AccountNFTsRequest = {
+                    command: 'account_nfts',
+                    account: account,
+                };
 
-            const response = await client.request(request);
-            setNfts(response.result.account_nfts);
-
-            await client.disconnect();
+                const response = await client.request(request);
+                setNfts(response.result.account_nfts);
+            } catch (error) {
+                console.error('NFTの取得中にエラーが発生しました:', error);
+                // エラーの種類に応じて適切な処理を行う
+                if (error instanceof RippledError) {
+                    // XRPLedger特有のエラー処理
+                    console.error('XRPLedgerエラー:', error.message);
+                } else if (error instanceof Error) {
+                    // その他の一般的なエラー処理
+                    console.error('一般エラー:', error.message);
+                }
+                // 必要に応じてユーザーにエラーを通知
+                // setError('NFTの取得に失敗しました。後でもう一度お試しください。');
+            } finally {
+                await client.disconnect();
+            }
         };
 
         fetchNFTs();
