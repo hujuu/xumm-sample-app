@@ -6,7 +6,8 @@ import {
     convertHexToString,
     NFTSellOffersRequest,
     NFTOffer,
-    dropsToXrp
+    dropsToXrp,
+    RippledError
 } from 'xrpl';
 
 type ItemListProps = {
