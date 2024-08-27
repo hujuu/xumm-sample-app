@@ -1,4 +1,4 @@
-import {useRef, useState} from "react";
+import {ChangeEvent, useRef, useState} from "react";
 import {mintNFT, Product} from "../composables/mintNFT.ts";
 
 type ItemListProps = {
@@ -9,7 +9,6 @@ const products = [
     {
         id: 1,
         name: 'Carnation',
-        href: '#',
         price: '0.000012 (Only TransferFee)',
         imageSrc: 'https://ipfs.io/ipfs/Qmesi9bJdTKfupTv3GPfnXHMnoF733E1X68pgCeuhHMmZi?filename=carnation01.webp',
         imageAlt: 'Tall slender porcelain bottle with natural clay textured body and cork stopper.',
@@ -18,7 +17,6 @@ const products = [
     {
         id: 2,
         name: 'Mimosa',
-        href: '#',
         price: '0.000012 (Only TransferFee)',
         imageSrc: 'https://ipfs.io/ipfs/QmQyo2FQFa1XwXCMtZ37pUdNEodubnn5E25PoQ8EQtv5eh?filename=mimosa01.webp',
         imageAlt: 'Olive drab green insulated bottle with flared screw lid and flat top.',
@@ -27,7 +25,6 @@ const products = [
     {
         id: 3,
         name: 'Ranunculus',
-        href: '#',
         price: '0.000012 (Only TransferFee)',
         imageSrc: 'https://ipfs.io/ipfs/QmZ5aBV23U5PksFNh8JTggaAJ6m6zecAEuvc3vgm9vfwTx?filename=ranunculus01.webp',
         imageAlt: 'Person using a pen to cross a task off a productivity paper card.',
@@ -36,7 +33,6 @@ const products = [
     {
         id: 4,
         name: 'Tulip',
-        href: '#',
         price: '0.000012 (Only TransferFee)',
         imageSrc: 'https://ipfs.io/ipfs/QmcAkzKXQaDCQjVeTxhB8B6XJLUa4mpNtt24vbuyHEfzSA?filename=tulip01.webp',
         imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
@@ -45,7 +41,6 @@ const products = [
     {
         id: 5,
         name: 'Ranunculus',
-        href: '#',
         price: '0.000012 (Only TransferFee)',
         imageSrc: 'https://gateway.pinata.cloud/ipfs/QmQF5z3gtAeae66LBDGK3ECBxXhPYNRYePGGGQ8ZVjyXbZ',
         imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
@@ -54,9 +49,16 @@ const products = [
     {
         id: 6,
         name: 'AoyamaDeveloperUnion',
-        href: '#',
         price: '0.000012 (Only TransferFee)',
         imageSrc: 'https://tan-tragic-hippopotamus-246.mypinata.cloud/ipfs/QmUxtwtHFBLZokLzXA8WyCLUf1EGMr4Xzt3cZBaZvufPXt',
+        imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
+        uri: 'ipfs://QmRPN2k2ESToWPCST5oH3bnf6TiuJsjNuBrWW9JBQsPREB',
+    },
+    {
+        id: 7,
+        name: 'BirthdayCake',
+        price: '0.000012 (Only TransferFee)',
+        imageSrc: 'https://tan-tragic-hippopotamus-246.mypinata.cloud/ipfs/QmcgruTgvr7xaFUCQG7ctRxMDuG8hiFhv7XTqfmvdtUtjn',
         imageAlt: 'Hand holding black machined steel mechanical pencil with brass tip and top.',
         uri: 'ipfs://QmRPN2k2ESToWPCST5oH3bnf6TiuJsjNuBrWW9JBQsPREB',
     },
@@ -66,8 +68,7 @@ export default function ItemList({ account }: ItemListProps) {
     const [inputValue, setInputValue] = useState('');
     const modalRefs = useRef<(HTMLDialogElement | null)[]>([]);
 
-    const handleInputChange = (e: any) => {
-        // inputからの新しい値をセットする
+    const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
 
