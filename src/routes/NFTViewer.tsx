@@ -175,39 +175,35 @@ export default function NFTViewer() {
             </div>
             { offers.length > 0 ? (
                 <ul className="flex justify-center">
-                    {offers.map(offer => (
-                        <li key={offer.nft_offer_index}>
-                            <div className="hidden">
-                                Offer ID: {offer.nft_offer_index}, Amount: {offer.amount.toString()}, Owner: {offer.owner}
+                    <li key={offers[0].nft_offer_index}>
+                        {account ? (
+                            account === nftInfo.owner ? (
+                                <></>
+                            ) : (
+                                <button
+                                    className="btn btn-outline btn-primary"
+                                    onClick={() => acceptOffer(offers[0].nft_offer_index)}
+                                    disabled={isAccepting}
+                                >
+                                    {isAccepting ? 'Accepting...' : 'NFTを受け取る'}
+                                </button>
+                            )
+                        ) : (
+                            <div className="grid justify-items-center">
+                                <button
+                                    className="btn btn-outline btn-info"
+                                    onClick={connect}>ウォレットを接続する
+                                </button>
+                                <div>※ウォレットを接続するとNFTを受け取ることができます</div>
                             </div>
-                            {account ? (
-                                account === nftInfo.owner ? (
-                                    <></>
-                                ):(
-                                    <button
-                                        className="btn btn-outline btn-primary"
-                                        onClick={() => acceptOffer(offer.nft_offer_index)}
-                                        disabled={isAccepting}
-                                    >
-                                        {isAccepting ? 'Accepting...' : 'NFTを受け取る'}
-                                    </button>
-                                )
-                            ):(
-                                <div className="grid justify-items-center">
-                                    <button
-                                        className="btn btn-outline btn-info"
-                                        onClick={connect}>ウォレットを接続する</button>
-                                    <div>※ウォレットを接続するとNFTを受け取ることができます</div>
-                                </div>
-                            )}
-                        </li>
-                    ))}
+                        )}
+                    </li>
                 </ul>
             ) : (
                 <p className="hidden">No offers available for this NFT.{accountId}</p>
             )}
-            {account && (account === nftInfo.Issuer || account === nftInfo.owner ) && data?.gift_urls && (
-                <PresentList urls={data?.gift_urls} />
+            {account && (account === nftInfo.Issuer || account === nftInfo.owner) && data?.gift_urls && (
+                <PresentList urls={data?.gift_urls}/>
             )}
         </div>
     );
